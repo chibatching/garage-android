@@ -19,9 +19,9 @@ test:
     # build the project
     - ./gradlew app:assembleDebug
     # run test
-    - ./gradlew test
+    - ./gradlew app:test
     # run lint
-    - ./gradlew lint
+    - ./gradlew app:lint
     # run robolectric tests - disabled for now
     #- ./gradlew testStagingDebugUnitTest -PdisablePreDex
   post:

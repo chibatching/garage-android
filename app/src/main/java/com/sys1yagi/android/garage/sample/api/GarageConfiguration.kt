@@ -8,6 +8,9 @@ class GarageConfiguration() {
     var scheme = "http"
     var callbackHandler: Handler? = null
     var port = 80
+
+    lateinit var applicationId: String
+    lateinit var applicationSecret: String
     lateinit var endpoint: String
     lateinit var versionName: String
     lateinit var client: OkHttpClient
@@ -22,6 +25,8 @@ class GarageConfiguration() {
 
         fun verify(instance: GarageConfiguration): GarageConfiguration {
             // Access the fields of lateinit . It happen crash If isn't initialized
+            instance.applicationId
+            instance.applicationSecret
             instance.endpoint
             instance.versionName
             instance.client
