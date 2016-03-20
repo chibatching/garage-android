@@ -1,5 +1,5 @@
 package com.sys1yagi.android.garage.sample.api
 
-data class Path(val path: String) {
+data class Path(val versionName: String, val path: String) {
 
 }

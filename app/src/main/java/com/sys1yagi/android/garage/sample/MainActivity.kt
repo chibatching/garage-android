@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
         val config = GarageConfiguration.make {
             port = 3000
             endpoint = "10.0.2.2"
-            versionName = "v1"
             client = OkHttpClient()
             callbackHandler = Handler()
         }

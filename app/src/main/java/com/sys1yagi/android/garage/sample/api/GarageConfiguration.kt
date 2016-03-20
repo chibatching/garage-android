@@ -12,7 +12,6 @@ class GarageConfiguration() {
     lateinit var applicationId: String
     lateinit var applicationSecret: String
     lateinit var endpoint: String
-    lateinit var versionName: String
     lateinit var client: OkHttpClient
 
     companion object {
@@ -28,7 +27,6 @@ class GarageConfiguration() {
             instance.applicationId
             instance.applicationSecret
             instance.endpoint
-            instance.versionName
             instance.client
             return instance
         }

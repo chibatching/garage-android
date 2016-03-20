@@ -11,7 +11,6 @@ class GarageConfigurationTest {
             this.applicationId = "a"
             this.applicationSecret = "b"
             this.endpoint = "c"
-            this.versionName = "d"
             this.client = OkHttpClient()
         }
     }

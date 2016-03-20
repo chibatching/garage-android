@@ -29,14 +29,16 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
 
         fun execute(): Response {
+
             return call.execute()
         }
     }
 
     fun get(path: Path): Caller {
         with(configuration) {
+            System.out.println("${scheme}://${endpoint}:$port/${path.versionName}/${path.path}")
             val request = Request.Builder()
-                    .url("${scheme}://${endpoint}:$port/${versionName}/${path.path}")
+                    .url("${scheme}://${endpoint}:$port/${path.path}")
                     .build()
             return Caller(client.newCall(request), configuration)
         }
