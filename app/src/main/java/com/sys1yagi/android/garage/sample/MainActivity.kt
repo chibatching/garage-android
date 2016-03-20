@@ -33,12 +33,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun request() {
-        client.get("users",
-                { c, r ->
-                    binding.result.text = r.body().string()
-                },
-                { c, e ->
-                    binding.result.text = "error=${e.message}"
-                })
+        //        client.get(Path("users"),
+        //                { c, r ->
+        //                    binding.result.text = r.body().string()
+        //                },
+        //                { c, e ->
+        //                    binding.result.text = "error=${e.message}"
+        //                })
     }
 }
