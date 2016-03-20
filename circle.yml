@@ -18,11 +18,11 @@ dependencies:
 test:
   override:
     # build the project
-    - ./gradlew app:assembleDebug
+    - ./gradlew library:assembleDebug
     # run test
-    - ./gradlew app:test
+    - ./gradlew library:test
     # run lint
-    - ./gradlew app:lint
+    - ./gradlew library:lint
     # run robolectric tests - disabled for now
     #- ./gradlew testStagingDebugUnitTest -PdisablePreDex
   post:
