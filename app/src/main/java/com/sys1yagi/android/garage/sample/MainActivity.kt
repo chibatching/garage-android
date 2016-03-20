@@ -4,8 +4,8 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
-import com.sys1yagi.android.garage.sample.api.GarageClient
-import com.sys1yagi.android.garage.sample.api.GarageConfiguration
+import com.sys1yagi.android.garage.api.GarageClient
+import com.sys1yagi.android.garage.api.GarageConfiguration
 import com.sys1yagi.android.garage.sample.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 

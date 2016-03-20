@@ -1,4 +1,4 @@
-package com.sys1yagi.android.garage.sample.api
+package com.sys1yagi.android.garage.api
 
 import android.os.Handler
 import okhttp3.Call
@@ -6,7 +6,6 @@ import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
-
 
 open class GarageClient(val configuration: GarageConfiguration) {
 

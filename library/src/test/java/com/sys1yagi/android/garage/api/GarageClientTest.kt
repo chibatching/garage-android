@@ -1,5 +1,4 @@
-package com.sys1yagi.android.garage.sample.api
-
+package com.sys1yagi.android.garage.api
 
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse

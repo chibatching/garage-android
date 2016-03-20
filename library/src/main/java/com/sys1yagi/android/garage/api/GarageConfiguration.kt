@@ -1,4 +1,4 @@
-package com.sys1yagi.android.garage.sample.api
+package com.sys1yagi.android.garage.api
 
 import android.os.Handler
 import okhttp3.OkHttpClient
