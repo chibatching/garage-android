@@ -5,6 +5,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
+import rx.Observable
 import java.io.IOException
 
 open class GarageClient(val configuration: GarageConfiguration) {
@@ -28,8 +29,17 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
 
         fun execute(): Response {
-
-            return call.execute()
+            return Observable.create<Response> { subscriber ->
+                enqueue(
+                        { c, r ->
+                            subscriber.onNext(r)
+                            subscriber.onCompleted()
+                        },
+                        { c, e ->
+                            subscriber.onError(e)
+                        }
+                )
+            }.toBlocking().first()
         }
     }
 
