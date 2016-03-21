@@ -18,16 +18,14 @@ dependencies:
 test:
   override:
     # build the project
-    - ./gradlew library:assembleDebug
+    - ./gradlew garage-core:assembleDebug
     # run test
-    - ./gradlew library:test
+    - ./gradlew garage-core:test
     # run lint
-    - ./gradlew library:lint
-    # run robolectric tests - disabled for now
-    #- ./gradlew testStagingDebugUnitTest -PdisablePreDex
+    - ./gradlew garage-core:lint
   post:
     # copy the build outputs to artifacts
-    - cp -r library/build/outputs $CIRCLE_ARTIFACTS
-    - cp -r library/build/reports $CIRCLE_ARTIFACTS
+    - cp -r garage-core/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r garage-core/build/reports $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory - disabled for now
-    #- cp -r library/build/reports/tests/* $CIRCLE_TEST_REPORTS
+    #- cp -r garage-core/build/reports/tests/* $CIRCLE_TEST_REPORTS
