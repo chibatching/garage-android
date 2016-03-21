@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    dataBinding.enabled = true
+    defaultConfig {
+        applicationId "com.sys1yagi.android.garage.sample"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    lintOptions{
+        disable 'InvalidPackage'
+    }
+}
+kapt {
+    generateStubs = true
+}
+
+dependencies {
+    compile project(':garage-core')
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    kapt 'com.android.databinding:compiler:1.0-rc5'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.2'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.2'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.2'
+    testCompile 'org.powermock:powermock-classloading-xstream:1.6.2'
+    testCompile 'org.robolectric:robolectric:3.0'
+    testCompile('com.squareup.assertj:assertj-android:1.1.1') {
+        exclude group: 'com.android.support', 'module': 'support-annotations'
+    }
+    testCompile ('com.squareup.okhttp3:mockwebserver:3.2.0'){
+        exclude group: 'com.squareup.okio', 'module': 'okio'
+        exclude group: 'com.squareup.okhttp', 'module': 'okhttp'
+    }
+    testCompile ('com.github.sys1yagi:kmockito:0.1.0'){
+        exclude group: 'org.jetbrains.kotlin', 'module': 'kotlin-stdlib'
+    }
+}
+buildscript {
+    ext.kotlin_version = '1.0.1'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+repositories {
+    mavenCentral()
+}
