@@ -2,6 +2,7 @@ package com.sys1yagi.android.garage
 
 import android.os.Handler
 import com.sys1yagi.android.garage.auth.Authenticator
+import com.sys1yagi.android.garage.impl.DefaultAuthenticator
 import okhttp3.OkHttpClient
 
 
@@ -10,7 +11,7 @@ class GarageConfiguration() {
     var scheme = "http"
     var callbackHandler: Handler? = null
     var port = 80
-    var authenticator: Authenticator? = null
+    var authenticator: Authenticator? = DefaultAuthenticator()
     lateinit var applicationId: String
     lateinit var applicationSecret: String
     lateinit var endpoint: String
