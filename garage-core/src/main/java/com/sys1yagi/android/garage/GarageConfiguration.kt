@@ -1,6 +1,7 @@
 package com.sys1yagi.android.garage
 
 import android.os.Handler
+import com.google.gson.Gson
 import com.sys1yagi.android.garage.auth.Authenticator
 import com.sys1yagi.android.garage.impl.DefaultAuthenticator
 import okhttp3.OkHttpClient
@@ -11,7 +12,8 @@ class GarageConfiguration() {
     var scheme = "http"
     var callbackHandler: Handler? = null
     var port = 80
-    var authenticator: Authenticator? = DefaultAuthenticator()
+    var authenticator: Authenticator? = null
+    var gson: Gson? = null
     lateinit var applicationId: String
     lateinit var applicationSecret: String
     lateinit var endpoint: String
@@ -31,6 +33,8 @@ class GarageConfiguration() {
             instance.applicationSecret
             instance.endpoint
             instance.client
+            instance.authenticator = instance.authenticator?.let { it } ?: DefaultAuthenticator()
+            instance.gson = instance.gson?.let { it } ?: Gson()
             return instance
         }
     }

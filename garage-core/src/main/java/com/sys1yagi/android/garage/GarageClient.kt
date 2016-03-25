@@ -50,10 +50,10 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
     }
 
-    class Caller(val call: Call, val garaceClient: GarageClient) {
+    class Caller(val call: Request, val garaceClient: GarageClient) {
         fun enqueue(success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit) {
             with(garaceClient.configuration) {
-                call.enqueue(CallbackDelegator(this@Caller, garaceClient, success, failed))
+                client.newCall(call).enqueue(CallbackDelegator(this@Caller, garaceClient, success, failed))
             }
         }
 
@@ -77,7 +77,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
             val request = headerProcessor(Request.Builder())
                     .url("${scheme}://${endpoint}:$port/${path.to()}")
                     .build()
-            return Caller(client.newCall(request), this@GarageClient)
+            return Caller(request, this@GarageClient)
         }
     }
 
@@ -87,7 +87,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
                     .url("${scheme}://${endpoint}:$port/${path.to()}")
                     .post(body)
                     .build()
-            return Caller(client.newCall(request), this@GarageClient)
+            return Caller(request, this@GarageClient)
         }
     }
 }
