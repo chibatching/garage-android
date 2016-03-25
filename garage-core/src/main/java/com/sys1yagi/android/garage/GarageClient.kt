@@ -1,9 +1,6 @@
 package com.sys1yagi.android.garage
 
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import rx.Observable
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -75,18 +72,22 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
     }
 
-    fun get(path: Path): Caller {
+    fun get(path: Path, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
         with(configuration) {
-            System.out.println("${scheme}://${endpoint}:$port/${path.versionName}/${path.path}")
-            val request = Request.Builder()
-                    .url("${scheme}://${endpoint}:$port/${path.path}")
+            val request = headerProcessor(Request.Builder())
+                    .url("${scheme}://${endpoint}:$port/${path.to()}")
                     .build()
             return Caller(client.newCall(request), this@GarageClient)
         }
     }
 
-    //    fun post(path: Path): Caller {
-    //
-    //    }
-
+    fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
+        with(configuration) {
+            val request = headerProcessor(Request.Builder())
+                    .url("${scheme}://${endpoint}:$port/${path.to()}")
+                    .post(body)
+                    .build()
+            return Caller(client.newCall(request), this@GarageClient)
+        }
+    }
 }
