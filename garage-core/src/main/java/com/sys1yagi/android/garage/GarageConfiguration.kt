@@ -2,8 +2,10 @@ package com.sys1yagi.android.garage
 
 import android.os.Handler
 import com.google.gson.Gson
+import com.sys1yagi.android.garage.auth.AccessTokenHolder
 import com.sys1yagi.android.garage.auth.Authenticator
 import com.sys1yagi.android.garage.impl.DefaultAuthenticator
+import com.sys1yagi.android.garage.impl.OnMemoryAccessTokenHolder
 import okhttp3.OkHttpClient
 
 
@@ -14,6 +16,7 @@ class GarageConfiguration() {
     var port = 80
     var authenticator: Authenticator? = null
     var gson: Gson? = null
+    var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()
     lateinit var applicationId: String
     lateinit var applicationSecret: String
     lateinit var endpoint: String

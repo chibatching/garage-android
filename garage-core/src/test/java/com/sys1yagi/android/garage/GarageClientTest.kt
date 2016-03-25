@@ -49,6 +49,7 @@ class GarageClientTest {
             assertThat(it.method).isEqualTo("GET")
             assertThat(it.path).isEqualTo("/v1/users")
         }
+        assertThat(client.configuration.accessTokenHolder.accessToken).isEqualTo("4bf2014681df03d9fa6ff2469d7b5594d85de2a6ca7ab15bcc5fd33d07bd1139")
     }
 
     @Test
