@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+def loadProperties(filename) {
+    def props = new Properties()
+    file(filename).withInputStream {
+        props.load(it)
+    }
+    return props
+}
+def garageProperties = loadProperties("garage.properties")
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -12,6 +21,11 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "garageId", "$garageProperties.application_id"
+        buildConfigField "String", "garageSecret", "$garageProperties.application_secret"
+        buildConfigField "String", "garageEndpoint", "$garageProperties.application_endpoint"
+
     }
     buildTypes {
         release {
@@ -54,7 +68,7 @@ dependencies {
     }
 }
 buildscript {
-    ext.kotlin_version = '1.0.1'
+    ext.kotlin_version = '1.0.1-1'
     repositories {
         mavenCentral()
     }
