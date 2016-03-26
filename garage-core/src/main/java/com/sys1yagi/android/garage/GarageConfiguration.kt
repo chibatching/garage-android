@@ -36,7 +36,7 @@ class GarageConfiguration() {
             instance.applicationSecret
             instance.endpoint
             instance.client
-            instance.authenticator = instance.authenticator?.let { it } ?: DefaultAuthenticator()
+            instance.authenticator = instance.authenticator?.let { it } ?: DefaultAuthenticator("anonymous")
             instance.gson = instance.gson?.let { it } ?: Gson()
             return instance
         }

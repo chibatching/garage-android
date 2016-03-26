@@ -6,6 +6,8 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import com.sys1yagi.android.garage.GarageClient
 import com.sys1yagi.android.garage.GarageConfiguration
+import com.sys1yagi.android.garage.impl.DefaultAuthenticator
+import com.sys1yagi.android.garage.sample.api.V1
 import com.sys1yagi.android.garage.sample.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 
@@ -16,9 +18,12 @@ class MainActivity : AppCompatActivity() {
     val client: GarageClient by lazy {
         val config = GarageConfiguration.make {
             port = 3000
-            endpoint = "10.0.2.2"
+            endpoint = BuildConfig.garageEndpoint
             client = OkHttpClient()
             callbackHandler = Handler()
+            applicationId = BuildConfig.garageId
+            applicationSecret = BuildConfig.garageSecret
+            authenticator = DefaultAuthenticator("morizyun@example.com")
         }
         GarageClient(config)
     }
@@ -32,12 +37,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun request() {
-        //        client.get(Path("users"),
-        //                { c, r ->
-        //                    binding.result.text = r.body().string()
-        //                },
-        //                { c, e ->
-        //                    binding.result.text = "error=${e.message}"
-        //                })
+        client.get(V1("users"))
+                .enqueue(
+                        { c, r ->
+                            binding.result.text = r.body().string()
+                        },
+                        { c, e ->
+                            binding.result.text = "error=${e.message}"
+                        })
     }
 }

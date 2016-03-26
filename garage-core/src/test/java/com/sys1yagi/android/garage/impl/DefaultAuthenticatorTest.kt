@@ -13,7 +13,7 @@ class DefaultAuthenticatorTest {
 
     @Test
     fun header() {
-        val authenticator = DefaultAuthenticator()
+        val authenticator = DefaultAuthenticator("test")
         val config = GarageConfiguration().apply {
             this.applicationId = "hoge"
             this.applicationSecret = "moge"
