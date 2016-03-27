@@ -15,7 +15,7 @@ class GarageConfiguration() {
     var callbackHandler: Handler? = null
     var port = 80
     var authenticator: Authenticator? = null
-    var gson: Gson? = null
+    var gson: Gson = Gson()
     var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()
     lateinit var applicationId: String
     lateinit var applicationSecret: String
@@ -37,7 +37,6 @@ class GarageConfiguration() {
             instance.endpoint
             instance.client
             instance.authenticator = instance.authenticator?.let { it } ?: DefaultAuthenticator("anonymous")
-            instance.gson = instance.gson?.let { it } ?: Gson()
             return instance
         }
     }
