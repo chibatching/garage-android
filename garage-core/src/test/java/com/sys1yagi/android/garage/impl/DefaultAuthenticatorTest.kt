@@ -14,12 +14,7 @@ class DefaultAuthenticatorTest {
     @Test
     fun header() {
         val authenticator = DefaultAuthenticator("test")
-        val config = GarageConfiguration().apply {
-            this.applicationId = "hoge"
-            this.applicationSecret = "moge"
-            this.endpoint = "c"
-            this.client = OkHttpClient()
-        }
+        val config = GarageConfiguration.make("hoge", "moge", "c", OkHttpClient())
 
         val builder = authenticator
                 .header(config).invoke(Request.Builder())

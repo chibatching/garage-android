@@ -7,11 +7,7 @@ class GarageConfigurationTest {
 
     @Test
     fun requiredConfiguration() {
-        val config = GarageConfiguration.make {
-            this.applicationId = "a"
-            this.applicationSecret = "b"
-            this.endpoint = "c"
-            this.client = OkHttpClient()
+        val config = GarageConfiguration.make("a", "b", "c", OkHttpClient()) {
         }
     }
 }

@@ -8,8 +8,7 @@ import com.sys1yagi.android.garage.impl.DefaultAuthenticator
 import com.sys1yagi.android.garage.impl.OnMemoryAccessTokenHolder
 import okhttp3.OkHttpClient
 
-
-class GarageConfiguration() {
+class GarageConfiguration private constructor(val applicationId: String, val applicationSecret: String, val endpoint: String, val client: OkHttpClient) {
 
     var scheme = "http"
     var callbackHandler: Handler? = null
@@ -17,14 +16,15 @@ class GarageConfiguration() {
     var authenticator: Authenticator? = null
     var gson: Gson = Gson()
     var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()
-    lateinit var applicationId: String
-    lateinit var applicationSecret: String
-    lateinit var endpoint: String
-    lateinit var client: OkHttpClient
 
     companion object {
-        fun make(builder: GarageConfiguration.() -> Unit): GarageConfiguration {
-            return GarageConfiguration().let {
+        fun make(
+                applicationId: String,
+                applicationSecret: String,
+                endpoint: String,
+                client: OkHttpClient,
+                builder: GarageConfiguration.() -> Unit = {}): GarageConfiguration {
+            return GarageConfiguration(applicationId, applicationSecret, endpoint, client).let {
                 builder(it)
                 verify(it)
             }

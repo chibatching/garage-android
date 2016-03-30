@@ -16,13 +16,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
     val client: GarageClient by lazy {
-        val config = GarageConfiguration.make {
+        val config = GarageConfiguration.make(BuildConfig.garageId, BuildConfig.garageSecret, BuildConfig.garageEndpoint, OkHttpClient()) {
             port = 3000
-            endpoint = BuildConfig.garageEndpoint
-            client = OkHttpClient()
             callbackHandler = Handler()
-            applicationId = BuildConfig.garageId
-            applicationSecret = BuildConfig.garageSecret
             authenticator = DefaultAuthenticator("sample@example.com")
         }
         GarageClient(config)

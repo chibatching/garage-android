@@ -24,12 +24,8 @@ class GarageClientTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
         mockWebServer.start()
 
-        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make {
+        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make("a", "b", mockWebServer.hostName, OkHttpClient()) {
             port = mockWebServer.port
-            applicationId = "a"
-            applicationSecret = "b"
-            endpoint = mockWebServer.hostName
-            client = OkHttpClient()
         })
 
         try {
@@ -61,12 +57,8 @@ class GarageClientTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
         mockWebServer.start()
 
-        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make {
+        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make("a", "b", mockWebServer.hostName, OkHttpClient()) {
             port = mockWebServer.port
-            applicationId = "a"
-            applicationSecret = "b"
-            endpoint = mockWebServer.hostName
-            client = OkHttpClient()
         })
 
         try {
