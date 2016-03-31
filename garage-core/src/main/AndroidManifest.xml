@@ -1,5 +1,5 @@
 <manifest
-        package="com.sys1yagi.library">
+        package="com.sys1yagi.android.garage.core">
 
     <application>
     </application>
