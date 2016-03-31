@@ -89,13 +89,16 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
     }
 
-    fun get(path: Path, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
+    fun get(path: Path, parameter: Parameter? = null, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
         with(configuration) {
             val request =
                     Request.Builder().apply {
                         headerProcessor(this)
-                        url("${scheme}://${endpoint}:$port/${path.to()}")
+                        url("${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: ""))
+                        get()
                     }
+
+
             return Caller(request, this@GarageClient)
         }
     }
@@ -103,7 +106,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
     fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
         with(configuration) {
             val request = headerProcessor(Request.Builder())
-                    .url("${scheme}://${endpoint}:$port/${path.to()}")
+                    .url("${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}")
                     .post(body)
             return Caller(request, this@GarageClient)
         }

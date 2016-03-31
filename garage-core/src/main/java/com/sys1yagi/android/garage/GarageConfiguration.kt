@@ -10,12 +10,13 @@ import okhttp3.OkHttpClient
 
 class GarageConfiguration private constructor(val applicationId: String, val applicationSecret: String, val endpoint: String, val client: OkHttpClient) {
 
-    var scheme = "http"
+    var scheme = Scheme.HTTP
     var callbackHandler: Handler? = null
     var port = 80
     var authenticator: Authenticator? = null
     var gson: Gson = Gson()
     var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()
+    var authEndpoint: String = endpoint
 
     companion object {
         fun make(
