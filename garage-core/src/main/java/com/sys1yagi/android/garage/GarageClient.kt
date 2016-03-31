@@ -103,10 +103,12 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
     }
 
-    fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
+    fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller = postWithEndpoint(path, configuration.endpoint, body, headerProcessor)
+
+    fun postWithEndpoint(path: Path, endpoint: String, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
         with(configuration) {
             val request = headerProcessor(Request.Builder())
-                    .url("${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}")
+                    .url("${scheme.string}://$endpoint:${if (port == 0) scheme.defaultPort else port}/${path.to()}")
                     .post(body)
             return Caller(request, this@GarageClient)
         }
