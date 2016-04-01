@@ -35,7 +35,7 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
 
     internal fun parseResponse(garageClient: GarageClient, response: Response) {
         if (response.isSuccessful) {
-            val body = garageClient.configuration.gson?.fromJson(response.body().string(), AuthResponseBody::class.java)
+            val body = garageClient.configuration.gson.fromJson(response.body().string(), AuthResponseBody::class.java)
             garageClient.configuration.accessTokenHolder.accessToken = body?.accessToken
         }
     }

@@ -12,7 +12,7 @@ class GarageConfiguration private constructor(val applicationId: String, val app
 
     var scheme = Scheme.HTTP
     var callbackHandler: Handler? = null
-    var port = 80
+    var port = 0
     var authenticator: Authenticator? = null
     var gson: Gson = Gson()
     var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()
