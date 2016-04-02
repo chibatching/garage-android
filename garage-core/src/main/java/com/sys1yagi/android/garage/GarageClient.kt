@@ -1,5 +1,6 @@
 package com.sys1yagi.android.garage
 
+import android.text.TextUtils
 import okhttp3.*
 import rx.Observable
 import java.io.IOException
@@ -85,6 +86,9 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
 
         fun authorization(configuration: GarageConfiguration, builder: Request.Builder): Request.Builder {
+            if (TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)) {
+                return builder
+            }
             return builder.header("Authorization", "Bearer ${configuration.accessTokenHolder.accessToken}")
         }
     }
