@@ -11,6 +11,10 @@ class Parameter {
         return this
     }
 
+    fun append(key: String, value: Int): Parameter = append(key, value.toString())
+
+    fun append(key: String, value: Long): Parameter = append(key, value.toString())
+
     fun build(): String =
             parameters
                     .map {
