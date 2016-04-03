@@ -64,7 +64,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
 
             fun enqueue(success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit, callback: CallbackDelegator? = null) {
                 with(garageClient.configuration) {
-                    client.newCall(authorization(this, request).build()).enqueue(
+                    client.newCall(garageHeader(this, request).build()).enqueue(
                             callback?.let { it }
                                     ?: CallbackDelegator(this@Caller, garageClient, success, failed, maxRetryCount))
                 }
@@ -85,25 +85,26 @@ open class GarageClient(val configuration: GarageConfiguration) {
             }
         }
 
-        fun authorization(configuration: GarageConfiguration, builder: Request.Builder): Request.Builder {
-            if (TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)) {
-                return builder
+        fun garageHeader(configuration: GarageConfiguration, builder: Request.Builder): Request.Builder {
+            builder.header("User-Agent", configuration.userAgent)
+            if (!TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)) {
+                builder.header("Authorization", "Bearer ${configuration.accessTokenHolder.accessToken}")
             }
-            return builder.header("Authorization", "Bearer ${configuration.accessTokenHolder.accessToken}")
+            
+            return builder
         }
     }
 
     fun get(path: Path, parameter: Parameter? = null, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
         with(configuration) {
             val request =
-                    Request.Builder().apply {
-                        headerProcessor(this)
-                        val url = "${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
-                        url(url)
-                        get()
-                    }
-
-
+                    Request.Builder()
+                            .apply {
+                                headerProcessor(this)
+                                val url = "${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
+                                url(url)
+                                get()
+                            }
             return Caller(request, this@GarageClient)
         }
     }

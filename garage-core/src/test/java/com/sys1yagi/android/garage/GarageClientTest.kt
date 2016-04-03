@@ -1,5 +1,6 @@
 package com.sys1yagi.android.garage
 
+import com.sys1yagi.android.garage.core.BuildConfig
 import com.sys1yagi.android.garage.testtool.milliseconds
 import com.sys1yagi.android.garage.testtool.takeRequest
 import okhttp3.OkHttpClient
@@ -15,6 +16,13 @@ import java.io.IOException
 @RunWith(RobolectricTestRunner::class)
 class GarageClientTest {
 
+    fun createGarageClient(mockWebServer: MockWebServer, builder: GarageConfiguration.() -> Unit = {}) =
+            GarageClient(GarageConfiguration.Companion.make("a", "b", mockWebServer.hostName, OkHttpClient()) {
+                port = mockWebServer.port
+                builder.invoke(this)
+            })
+
+
     @Test
     fun notYetAuth() {
         val mockWebServer = MockWebServer()
@@ -24,9 +32,7 @@ class GarageClientTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
         mockWebServer.start()
 
-        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make("a", "b", mockWebServer.hostName, OkHttpClient()) {
-            port = mockWebServer.port
-        })
+        val client: GarageClient = createGarageClient(mockWebServer)
 
         try {
             val response = client.get(Path("v1", "users")).execute()
@@ -57,9 +63,7 @@ class GarageClientTest {
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
         mockWebServer.start()
 
-        val client: GarageClient = GarageClient(GarageConfiguration.Companion.make("a", "b", mockWebServer.hostName, OkHttpClient()) {
-            port = mockWebServer.port
-        })
+        val client: GarageClient = createGarageClient(mockWebServer)
 
         try {
             val response = client.get(Path("v1", "users"))
@@ -71,6 +75,7 @@ class GarageClientTest {
         }
 
         mockWebServer.takeRequest().let {
+            assertThat(it.getHeader("User-Agent")).isEqualTo("garage-android-${BuildConfig.VERSION_NAME}")
             assertThat(it.method).isEqualTo("GET")
             assertThat(it.path).isEqualTo("/v1/users")
         }
@@ -82,8 +87,21 @@ class GarageClientTest {
     }
 
     @Test
-    fun haveAAuthToken() {
+    fun customUserAgent() {
+        val mockWebServer = MockWebServer()
+        mockWebServer.enqueue(MockResponse().setResponseCode(200))
+        mockWebServer.start()
+        val client: GarageClient = createGarageClient(mockWebServer, {
+            userAgent = "custom"
+        })
 
+        client.get(Path("v1", "test"))
+                .execute()
+        mockWebServer.takeRequest().let {
+            assertThat(it.getHeader("User-Agent")).isEqualTo("custom")
+            assertThat(it.method).isEqualTo("GET")
+            assertThat(it.path).isEqualTo("/v1/test")
+        }
     }
 
     //request queue
