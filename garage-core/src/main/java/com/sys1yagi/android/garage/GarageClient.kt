@@ -27,7 +27,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
                 }
             }
 
-            fun doAuthenticate(): Boolean {
+            fun doAuthenticate(isAuthRequest: Boolean = false): Boolean {
                 System.out.println("retry:$retryCount, $maxRetryCount")
                 if (retryCount >= maxRetryCount) {
                     return false
@@ -53,7 +53,6 @@ open class GarageClient(val configuration: GarageConfiguration) {
             }
         }
 
-
         class Caller(val request: Request.Builder, val garageClient: GarageClient) {
             private var maxRetryCount = 1
 
@@ -62,11 +61,19 @@ open class GarageClient(val configuration: GarageConfiguration) {
                 return this
             }
 
-            fun enqueue(success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit, callback: CallbackDelegator? = null) {
+            fun enqueue(success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit, callback: CallbackDelegator? = null, isAuthRequest: Boolean = false) {
                 with(garageClient.configuration) {
-                    client.newCall(garageHeader(this, request).build()).enqueue(
-                            callback?.let { it }
-                                    ?: CallbackDelegator(this@Caller, garageClient, success, failed, maxRetryCount))
+                    if (!isAuthRequest and shouldAuthentication(this)) {
+                        if (callback != null) {
+                            callback.doAuthenticate()
+                        } else {
+                            val result = CallbackDelegator(this@Caller, garageClient, success, failed, maxRetryCount).doAuthenticate()
+                        }
+                    } else {
+                        client.newCall(garageHeader(this, request).build()).enqueue(
+                                callback?.let { it }
+                                        ?: CallbackDelegator(this@Caller, garageClient, success, failed, maxRetryCount))
+                    }
                 }
             }
 
@@ -85,12 +92,16 @@ open class GarageClient(val configuration: GarageConfiguration) {
             }
         }
 
+        fun shouldAuthentication(configuration: GarageConfiguration): Boolean =
+                TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)
+
+
         fun garageHeader(configuration: GarageConfiguration, builder: Request.Builder): Request.Builder {
             builder.header("User-Agent", configuration.userAgent)
             if (!TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)) {
                 builder.header("Authorization", "Bearer ${configuration.accessTokenHolder.accessToken}")
             }
-            
+
             return builder
         }
     }

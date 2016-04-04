@@ -17,6 +17,7 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
     }
 
     override fun authenticate(garageClient: GarageClient, success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit) {
+        System.out.println("do authenticate")
         garageClient.post(Path("", "oauth/token"),
                 RequestBody.create(MEDIA_TYPE_FORM_URLENCODED,
                         Parameter()
@@ -30,7 +31,11 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
                         { c, r ->
                             parseResponse(garageClient, r)
                             success(c, r)
-                        }, failed)
+                        },
+                        { c, e ->
+                            failed.invoke(c, e)
+                        },
+                        isAuthRequest = true)
     }
 
     internal fun parseResponse(garageClient: GarageClient, response: Response) {
