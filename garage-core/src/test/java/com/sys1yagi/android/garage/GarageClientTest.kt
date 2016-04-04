@@ -8,6 +8,8 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -22,10 +24,20 @@ class GarageClientTest {
                 builder.invoke(this)
             })
 
+    lateinit var mockWebServer: MockWebServer
+
+    @Before
+    fun setUp() {
+        mockWebServer = MockWebServer()
+    }
+
+    @After
+    fun tearDown() {
+        mockWebServer.shutdown()
+    }
 
     @Test
     fun notYetAuth() {
-        val mockWebServer = MockWebServer()
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
         mockWebServer.enqueue(MockResponse().setResponseCode(200)
                 .setBody("{\"access_token\":\"4bf2014681df03d9fa6ff2469d7b5594d85de2a6ca7ab15bcc5fd33d07bd1139\",\"token_type\":\"bearer\",\"expires_in\":7200,\"scope\":\"public\"}"))
@@ -54,12 +66,10 @@ class GarageClientTest {
             assertThat(it.path).isEqualTo("/v1/users")
         }
         assertThat(client.configuration.accessTokenHolder.accessToken).isEqualTo("4bf2014681df03d9fa6ff2469d7b5594d85de2a6ca7ab15bcc5fd33d07bd1139")
-        mockWebServer.shutdown()
     }
 
     @Test
     fun noRetry() {
-        val mockWebServer = MockWebServer()
         mockWebServer.enqueue(MockResponse().setResponseCode(401))
         mockWebServer.start()
 
@@ -82,8 +92,6 @@ class GarageClientTest {
         mockWebServer.takeRequest(10.milliseconds)?.let {
             fail("should not retry")
         }
-
-        mockWebServer.shutdown()
     }
 
     @Test
