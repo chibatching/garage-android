@@ -8,4 +8,14 @@ class OnMemoryAccessTokenHolder : AccessTokenHolder {
         set(value) {
             field = value
         }
+    override var expried: Long? = 0L
+        get() = field
+        set(value) {
+            field = value
+        }
+    override var savedAt: Long? = 0L
+        get() = field
+        set(value) {
+            field = value
+        }
 }

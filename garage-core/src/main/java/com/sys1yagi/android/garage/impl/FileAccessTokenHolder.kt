@@ -7,4 +7,12 @@ class FileAccessTokenHolder : AccessTokenHolder {
         get() = throw UnsupportedOperationException()
         set(value) {
         }
+    override var savedAt: Long?
+        get() = throw UnsupportedOperationException()
+        set(value) {
+        }
+    override var expried: Long?
+        get() = throw UnsupportedOperationException()
+        set(value) {
+        }
 }
