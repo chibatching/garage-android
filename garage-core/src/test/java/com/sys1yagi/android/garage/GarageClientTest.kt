@@ -1,8 +1,10 @@
 package com.sys1yagi.android.garage
 
-import com.sys1yagi.android.garage.testtool.TestAccessTokenHolder
 import com.sys1yagi.android.garage.testtool.milliseconds
 import com.sys1yagi.android.garage.testtool.takeRequest
+import com.sys1yagi.kmockito.any
+import com.sys1yagi.kmockito.invoked
+import com.sys1yagi.kmockito.mock
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -64,22 +66,50 @@ class GarageClientTest {
     }
 
     @Test
+    fun hasAccessToken() {
+        mockWebServer.enqueue(MockResponse().setResponseCode(200))
+        mockWebServer.start()
+        val client: GarageClient = createGarageClient(mockWebServer, {
+            accessTokenHandler = mock()
+            accessTokenHandler.shouldAuthentication(any()).invoked.thenReturn(false)
+        })
+        client.get(Path("v1", "test")).execute()
+        mockWebServer.takeRequest().let {
+            assertThat(it.method).isEqualTo("GET")
+            assertThat(it.path).isEqualTo("/v1/test")
+        }
+    }
+
+    @Test
     fun customUserAgent() {
         val mockWebServer = MockWebServer()
         mockWebServer.enqueue(MockResponse().setResponseCode(200))
         mockWebServer.start()
         val client: GarageClient = createGarageClient(mockWebServer, {
             userAgent = "custom"
-            accessTokenHolder = TestAccessTokenHolder("test")
+            accessTokenHandler = mock()
+            accessTokenHandler.shouldAuthentication(any()).invoked.thenReturn(false)
         })
 
-        client.get(Path("v1", "test"))
-                .execute()
+        client.get(Path("v1", "test")).execute()
         mockWebServer.takeRequest().let {
             assertThat(it.getHeader("User-Agent")).isEqualTo("custom")
             assertThat(it.method).isEqualTo("GET")
             assertThat(it.path).isEqualTo("/v1/test")
         }
+    }
+
+    @Test
+    fun accessTokenExpired() {
+        val mockWebServer = MockWebServer()
+        mockWebServer.enqueue(MockResponse().setResponseCode(200)
+                .setBody("{\"access_token\":\"new token\",\"token_type\":\"bearer\",\"expires_in\":7200,\"scope\":\"public\"}"))
+        mockWebServer.enqueue(MockResponse().setResponseCode(200))
+        mockWebServer.start()
+        val client: GarageClient = createGarageClient(mockWebServer)
+        client.get(Path("v1", "test")).execute()
+        assertThat(client.configuration.accessTokenHolder.accessToken)
+                .isEqualTo("new token")
     }
 
     //request queue

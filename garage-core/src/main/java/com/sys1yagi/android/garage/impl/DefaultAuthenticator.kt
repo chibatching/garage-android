@@ -17,8 +17,8 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
     }
 
     override fun authenticate(garageClient: GarageClient, success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit) {
-        System.out.println("do authenticate")
-        garageClient.post(Path("", "oauth/token"),
+        garageClient.postWithEndpoint(garageClient.configuration.authEndpoint,
+                Path("", "oauth/token"),
                 RequestBody.create(MEDIA_TYPE_FORM_URLENCODED,
                         Parameter()
                                 .append("grant_type", "password")
@@ -42,6 +42,8 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
         if (response.isSuccessful) {
             val body = garageClient.configuration.gson.fromJson(response.body().string(), AuthResponseBody::class.java)
             garageClient.configuration.accessTokenHolder.accessToken = body.accessToken
+            garageClient.configuration.accessTokenHolder.savedAt = System.currentTimeMillis()
+            garageClient.configuration.accessTokenHolder.expried = body.expiresIn.toLong()
         }
     }
 

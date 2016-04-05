@@ -34,7 +34,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
                 }
                 retryCount += 1
                 with(garaceClient.configuration) {
-                    return authenticator?.let {
+                    return authenticator.let {
                         it.authenticate(garaceClient,
                                 { call, response ->
                                     if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED && doAuthenticate()) {
@@ -63,7 +63,7 @@ open class GarageClient(val configuration: GarageConfiguration) {
 
             fun enqueue(success: (Call, Response) -> Unit, failed: (Call, IOException) -> Unit, callback: CallbackDelegator? = null, isAuthRequest: Boolean = false) {
                 with(garageClient.configuration) {
-                    if (!isAuthRequest and shouldAuthentication(this)) {
+                    if (!isAuthRequest and accessTokenHandler.shouldAuthentication(accessTokenHolder)) {
                         if (callback != null) {
                             callback.doAuthenticate()
                         } else {
@@ -91,10 +91,6 @@ open class GarageClient(val configuration: GarageConfiguration) {
                 }.toBlocking().first()
             }
         }
-
-        fun shouldAuthentication(configuration: GarageConfiguration): Boolean =
-                TextUtils.isEmpty(configuration.accessTokenHolder.accessToken)
-
 
         fun garageHeader(configuration: GarageConfiguration, builder: Request.Builder): Request.Builder {
             builder.header("User-Agent", configuration.userAgent)
