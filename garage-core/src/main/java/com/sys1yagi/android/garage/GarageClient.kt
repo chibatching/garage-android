@@ -102,27 +102,31 @@ open class GarageClient(val configuration: GarageConfiguration) {
         }
     }
 
-    fun get(path: Path, parameter: Parameter? = null, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
+    fun get(path: Path, parameter: Parameter? = null, customHeaderProcessor: (Request.Builder) -> Unit = { }): Caller {
         with(configuration) {
             val request =
                     Request.Builder()
                             .apply {
-                                headerProcessor(this)
+                                headerProcessor.invoke(this)
+                                customHeaderProcessor.invoke(this)
                                 val url = "${scheme.string}://${endpoint}:${if (port == 0) scheme.defaultPort else port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
                                 url(url)
-                                get()
-                            }
+                            }.get()
             return Caller(request, this@GarageClient)
         }
     }
 
-    fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller = postWithEndpoint(configuration.endpoint, path, body, headerProcessor)
+    fun post(path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Unit = { }): Caller = postWithEndpoint(configuration.endpoint, path, body, headerProcessor)
 
-    fun postWithEndpoint(endpoint: String, path: Path, body: RequestBody, headerProcessor: (Request.Builder) -> Request.Builder = { it }): Caller {
+    fun postWithEndpoint(endpoint: String, path: Path, body: RequestBody, customHeaderProcessor: (Request.Builder) -> Unit = { }): Caller {
         with(configuration) {
-            val request = headerProcessor(Request.Builder())
-                    .url("${scheme.string}://$endpoint:${if (port == 0) scheme.defaultPort else port}/${path.to()}")
-                    .post(body)
+            val request =
+                    Request.Builder().apply {
+                        headerProcessor.invoke(this)
+                        customHeaderProcessor.invoke(this)
+                    }
+                            .url("${scheme.string}://$endpoint:${if (port == 0) scheme.defaultPort else port}/${path.to()}")
+                            .post(body)
             return Caller(request, this@GarageClient)
         }
     }

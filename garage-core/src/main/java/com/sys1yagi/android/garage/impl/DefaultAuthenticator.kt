@@ -47,10 +47,9 @@ class DefaultAuthenticator(val userName: String) : Authenticator {
         }
     }
 
-    fun header(configuration: GarageConfiguration): (Request.Builder) -> Request.Builder {
+    fun header(configuration: GarageConfiguration): (Request.Builder) -> Unit {
         return {
-            it.addHeader("Authorization", "Basic "
-                    + String(Base64.encode("${configuration.applicationId}:${configuration.applicationSecret}".toByteArray(), Base64.NO_WRAP)))
+            it.addHeader("Authorization", "Basic " + String(Base64.encode("${configuration.applicationId}:${configuration.applicationSecret}".toByteArray(), Base64.NO_WRAP)))
         }
     }
 

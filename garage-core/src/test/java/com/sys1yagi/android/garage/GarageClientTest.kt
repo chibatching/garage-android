@@ -6,6 +6,7 @@ import com.sys1yagi.kmockito.any
 import com.sys1yagi.kmockito.invoked
 import com.sys1yagi.kmockito.mock
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -111,6 +112,30 @@ class GarageClientTest {
         assertThat(client.configuration.accessTokenHolder.accessToken)
                 .isEqualTo("new token")
     }
+
+    @Test
+    fun customHeader() {
+
+        class TestHeaderProcessor : HeaderProcessor {
+            override fun invoke(builder: Request.Builder) {
+                builder.header("test", "value")
+            }
+        }
+
+        val mockWebServer = MockWebServer()
+        mockWebServer.enqueue(MockResponse().setResponseCode(200))
+        mockWebServer.start()
+        val client: GarageClient = createGarageClient(mockWebServer, {
+            headerProcessor = TestHeaderProcessor()
+            accessTokenHandler = mock()
+            accessTokenHandler.shouldAuthentication(any()).invoked.thenReturn(false)
+        })
+        client.get(Path("v1", "test")).execute()
+        mockWebServer.takeRequest().let {
+            assertThat(it.getHeader("test")).isEqualTo("value")
+        }
+    }
+
 
     //request queue
 

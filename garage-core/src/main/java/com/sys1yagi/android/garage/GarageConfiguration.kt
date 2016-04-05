@@ -15,6 +15,7 @@ class GarageConfiguration private constructor(val applicationId: String, val app
     var scheme = Scheme.HTTP
     var callbackHandler: Handler? = null
     var port = 0
+    var headerProcessor: HeaderProcessor = DefaultHeaderProcessor()
     var authenticator: Authenticator = DefaultAuthenticator("anonymous")
     var accessTokenHandler: AccessTokenHandler = DefaultAccessTokenHandler(DefaultTimeProvider())
     var accessTokenHolder: AccessTokenHolder = OnMemoryAccessTokenHolder()

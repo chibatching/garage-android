@@ -16,8 +16,10 @@ class DefaultAuthenticatorTest {
         val authenticator = DefaultAuthenticator("test")
         val config = GarageConfiguration.make("hoge", "moge", "c", OkHttpClient())
 
-        val builder = authenticator
-                .header(config).invoke(Request.Builder())
+        val builder = Request.Builder()
+                .apply {
+                    authenticator.header(config).invoke(this)
+                }
                 .url("http://test")
 
         assertThat(builder.build().header("Authorization")).isEqualTo("Basic aG9nZTptb2dl")
