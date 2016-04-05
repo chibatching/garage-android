@@ -4,5 +4,8 @@ import com.sys1yagi.android.garage.auth.AccessTokenHolder
 
 class TestAccessTokenHolder(val _accessToken: String) : AccessTokenHolder {
 
-    override var accessToken: String? = _accessToken
+    override var accessToken: String = _accessToken
+    override var expried: Long = 0
+    override var savedAt: Long = 0
+
 }
