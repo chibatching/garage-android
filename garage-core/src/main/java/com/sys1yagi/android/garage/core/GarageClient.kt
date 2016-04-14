@@ -91,7 +91,7 @@ class GarageClient(val config: GarageConfiguration) {
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)
                         },
-                        {it}
+                        prepare()
                 )
             }
         }
@@ -108,7 +108,7 @@ class GarageClient(val config: GarageConfiguration) {
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)
                         },
-                        {it}
+                        prepare()
                 )
             }
         }
