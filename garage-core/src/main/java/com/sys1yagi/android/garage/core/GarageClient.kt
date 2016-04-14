@@ -90,7 +90,9 @@ class GarageClient(val config: GarageConfiguration) {
                         },
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)
-                        })
+                        },
+                        {it}
+                )
             }
         }
         return null
@@ -105,7 +107,9 @@ class GarageClient(val config: GarageConfiguration) {
                         },
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)
-                        })
+                        },
+                        {it}
+                )
             }
         }
         return null

@@ -34,16 +34,19 @@ open class DefaultAuthenticator(var userName: String, private val config: Authen
         return response.response.code() == HttpURLConnection.HTTP_UNAUTHORIZED
     }
 
-    override fun createAuthRequest(success: (GarageResponse) -> Unit, failed: (GarageError) -> Unit): PostRequest {
+    override fun createAuthRequest(success: (GarageResponse) -> Unit, failed: (GarageError) -> Unit, requestPreparing: (Request.Builder) -> Request.Builder): PostRequest {
         return PostRequest(Path("", "oauth/token"),
                 RequestBody.create(MEDIA_TYPE_FORM_URLENCODED,
                         Parameter()
                                 .append("grant_type", "password")
                                 .append("username", userName)
                                 .build()),
-                config, { builder ->
-            builder.addHeader("Authorization", "Basic " + String(Base64.encode("${config.applicationId}:${config.applicationSecret}".toByteArray(), Base64.NO_WRAP)))
-        }).apply {
+                config,
+                { builder ->
+                    requestPreparing.invoke(builder)
+                    builder.addHeader("Authorization", "Basic " + String(Base64.encode("${config.applicationId}:${config.applicationSecret}".toByteArray(), Base64.NO_WRAP)))
+                }
+        ).apply {
             invoker = GarageRequest.Invoker(
                     {
                         val body = Gson().fromJson(it.response.body().string(), AuthResponseBody::class.java)

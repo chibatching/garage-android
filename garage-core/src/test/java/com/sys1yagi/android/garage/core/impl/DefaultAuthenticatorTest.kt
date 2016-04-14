@@ -184,7 +184,8 @@ class DefaultAuthenticatorTest {
                         },
                         {
                             fail(it.exception.message)
-                        }
+                        },
+                        {it}
                 )
                 on("Do auth request and succeed") {
                     authRequest.execute(

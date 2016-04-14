@@ -9,6 +9,6 @@ import okhttp3.Request
 interface Authenticator {
     fun shouldAuthentication(request: GetRequest): Boolean
     fun shouldAuthentication(response: GarageResponse): Boolean
-    fun createAuthRequest(success: (GarageResponse) -> Unit, failed: (GarageError) -> Unit): GarageRequest
+    fun createAuthRequest(success: (GarageResponse) -> Unit, failed: (GarageError) -> Unit, requestPreparing: (Request.Builder) -> Request.Builder): GarageRequest
     fun requestPreparing(builder: Request.Builder): Request.Builder
 }
