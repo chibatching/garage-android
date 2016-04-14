@@ -1,5 +1,6 @@
 package com.sys1yagi.android.garage.core.request
 
+import android.util.Log
 import com.sys1yagi.android.garage.core.config.RequestConfiguration
 import okhttp3.Call
 import okhttp3.Request

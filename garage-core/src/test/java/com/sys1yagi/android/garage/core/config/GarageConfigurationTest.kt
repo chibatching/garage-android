@@ -21,11 +21,6 @@ class GarageConfigurationTest {
                 RequestConfiguration(
                         client, "test.com"
                 ),
-                AuthenticatorConfiguration(
-                        client, "auth.test.com",
-                        "application_id",
-                        "application_secret"
-                ),
                 ExecutorConfiguration(Executor()),
                 JsonConvertConfiguration(GsonConverter(Gson()))
         )

@@ -48,7 +48,6 @@ class GarageClientTest {
                 RequestConfiguration(client, mockWebServer.hostName).apply {
                     customPort = mockWebServer.port
                 },
-                authConfig,
                 ExecutorConfiguration(Executor()),
                 JsonConvertConfiguration(GsonConverter(Gson()))
         )).apply {
