@@ -53,7 +53,7 @@ class DefaultAuthenticatorTest {
         fun shouldAuthenticationIsTrue2() {
             val request: GetRequest = mock()
 
-            request.requestTime().invoked.thenReturn(22)
+            request.requestTime().invoked.thenReturn(12010)
             accessTokenContainer.accessToken = "test"
             accessTokenContainer.savedAt = 10
             accessTokenContainer.expired = 12
@@ -66,10 +66,10 @@ class DefaultAuthenticatorTest {
         fun shouldAuthenticationIsTrue3() {
             val request: GetRequest = mock()
 
-            request.requestTime().invoked.thenReturn(22)
+            request.requestTime().invoked.thenReturn(12009)
             accessTokenContainer.accessToken = ""
             accessTokenContainer.savedAt = 10
-            accessTokenContainer.expired = 13
+            accessTokenContainer.expired = 12
 
             assertThat(authenticator.shouldAuthentication(request))
                     .isTrue()
