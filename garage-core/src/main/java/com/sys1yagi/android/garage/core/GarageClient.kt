@@ -19,10 +19,14 @@ class GarageClient(val config: GarageConfiguration) {
     fun get(path: Path, parameter: Parameter? = null): Observable<Response> {
         return Observable.create { subscriber ->
             val request = createRequest(path, parameter, subscriber)
-            extractAuthRequest(request)?.let { authRequest ->
-                config.executorConfiguration.executor.enqueue(authRequest)
-            } ?: config.executorConfiguration.executor.enqueue(request)
+            requestOrAuth(request)
         }
+    }
+
+    private fun requestOrAuth(request:GarageRequest){
+        extractAuthRequest(request)?.let { authRequest ->
+            config.executorConfiguration.executor.enqueue(authRequest)
+        } ?: config.executorConfiguration.executor.enqueue(request)
     }
 
     private fun prepare(): (Request.Builder) -> Request.Builder {
@@ -81,12 +85,12 @@ class GarageClient(val config: GarageConfiguration) {
         }
     }
 
-    private fun extractAuthRequest(request: GetRequest, response: GarageResponse): GarageRequest? {
+    private fun extractAuthRequest(request: GarageRequest, response: GarageResponse): GarageRequest? {
         authenticators.forEach {
             if (it.shouldAuthentication(response)) {
                 return it.createAuthRequest(
                         {
-                            config.executorConfiguration.executor.enqueue(request)
+                            requestOrAuth(request)
                         },
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)
@@ -98,12 +102,12 @@ class GarageClient(val config: GarageConfiguration) {
         return null
     }
 
-    private fun extractAuthRequest(request: GetRequest): GarageRequest? {
+    private fun extractAuthRequest(request: GarageRequest): GarageRequest? {
         authenticators.forEach {
             if (it.shouldAuthentication(request)) {
                 return it.createAuthRequest(
                         {
-                            config.executorConfiguration.executor.enqueue(request)
+                            requestOrAuth(request)
                         },
                         { error ->
                             request.invoker?.callbackFailed?.invoke(error)

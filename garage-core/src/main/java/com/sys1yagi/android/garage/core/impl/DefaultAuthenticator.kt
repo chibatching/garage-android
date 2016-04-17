@@ -19,7 +19,7 @@ open class DefaultAuthenticator(var userName: String, private val config: Authen
         val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
     }
 
-    override fun shouldAuthentication(request: GetRequest): Boolean {
+    override fun shouldAuthentication(request: GarageRequest): Boolean {
         return isEmpty(container) or isExpired(request.requestTime(), container)
     }
 
@@ -28,7 +28,7 @@ open class DefaultAuthenticator(var userName: String, private val config: Authen
     }
 
     internal fun isExpired(now: Long, accessTokenHolder: AccessTokenContainer): Boolean =
-            now >= accessTokenHolder.savedAt + accessTokenHolder.expired
+            now >= accessTokenHolder.savedAt + accessTokenHolder.expired * 1000
 
     override fun shouldAuthentication(response: GarageResponse): Boolean {
         return response.response.code() == HttpURLConnection.HTTP_UNAUTHORIZED

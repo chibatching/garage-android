@@ -4,7 +4,7 @@ import android.text.TextUtils
 
 open class Path(private val versionName: String, private val path: String) {
 
-    fun to(): String {
+    open fun to(): String {
         if (TextUtils.isEmpty(versionName)) {
             return path
         } else {

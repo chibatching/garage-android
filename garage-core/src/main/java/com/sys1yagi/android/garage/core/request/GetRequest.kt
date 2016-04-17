@@ -11,7 +11,8 @@ open class GetRequest(private val path: Path, private val config: RequestConfigu
 
     override fun url(): String {
         with(config) {
-            return "${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
+            val url =  "${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
+            return url
         }
     }
 
