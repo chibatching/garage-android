@@ -3,13 +3,21 @@ package com.sys1yagi.android.garage.core
 import com.sys1yagi.android.garage.core.auth.Authenticator
 import com.sys1yagi.android.garage.core.config.GarageConfiguration
 import com.sys1yagi.android.garage.core.request.*
+import okhttp3.MediaType
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.Response
 import rx.Observable
 import rx.Subscriber
 import java.util.*
 
 class GarageClient(val config: GarageConfiguration) {
+
+    companion object {
+        val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
+        val MEDIA_TYPE_JSON: MediaType = MediaType.parse("application/json; charset=utf-8");
+    }
+
     private val authenticators: ArrayList<Authenticator> = ArrayList()
 
     fun addAuthenticator(authenticator: Authenticator) {
@@ -18,48 +26,18 @@ class GarageClient(val config: GarageConfiguration) {
 
     fun get(path: Path, parameter: Parameter? = null): Observable<Response> {
         return Observable.create { subscriber ->
-            val request = createRequest(path, parameter, subscriber)
+            val request = createGetRequest(path, parameter, subscriber)
             requestOrAuth(request)
         }
     }
 
-    private fun requestOrAuth(request:GarageRequest){
-        extractAuthRequest(request)?.let { authRequest ->
-            config.executorConfiguration.executor.enqueue(authRequest)
-        } ?: config.executorConfiguration.executor.enqueue(request)
-    }
-
-    private fun prepare(): (Request.Builder) -> Request.Builder {
-        return { builder ->
-            authenticators.forEach {
-                it.requestPreparing(builder)
-            }
-            builder
+    fun post(path: Path, body: RequestBody): Observable<Response> {
+        return Observable.create { subscriber ->
+            val request = createPostRequest(path, body, subscriber)
+            requestOrAuth(request)
         }
     }
 
-    private fun createRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
-            GetRequest(path, config.requestConfiguration, prepare()).apply {
-                this.parameter = parameter
-                this.invoker = GarageRequest.Invoker(
-                        { garageResponse ->
-                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
-                                config.executorConfiguration.executor.enqueue(authRequest)
-                                return@Invoker
-                            }
-                            subscriber.onNext(garageResponse.response)
-                            subscriber.onCompleted()
-                        },
-                        {
-                            subscriber.onError(it.exception)
-                        }
-                )
-            }
-
-    fun post(): Observable<Response> {
-        return Observable.create {
-        }
-    }
 
     fun head(): Observable<Response> {
         return Observable.create {
@@ -79,11 +57,81 @@ class GarageClient(val config: GarageConfiguration) {
         }
     }
 
-    fun delete(): Observable<Response> {
-        return Observable.create {
-
+    fun delete(path: Path, parameter: Parameter? = null): Observable<Response> {
+        return Observable.create { subscriber ->
+            val request = createDeleteRequest(path, parameter, subscriber)
+            requestOrAuth(request)
         }
     }
+
+    private fun requestOrAuth(request: GarageRequest) {
+        extractAuthRequest(request)?.let { authRequest ->
+            config.executorConfiguration.executor.enqueue(authRequest)
+        } ?: config.executorConfiguration.executor.enqueue(request)
+    }
+
+    private fun prepare(): (Request.Builder) -> Request.Builder {
+        return { builder ->
+            authenticators.forEach {
+                it.requestPreparing(builder)
+            }
+            builder
+        }
+    }
+
+    private fun createGetRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
+            GetRequest(path, config.requestConfiguration, prepare()).apply {
+                this.parameter = parameter
+                this.invoker = GarageRequest.Invoker(
+                        { garageResponse ->
+                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                                config.executorConfiguration.executor.enqueue(authRequest)
+                                return@Invoker
+                            }
+                            subscriber.onNext(garageResponse.response)
+                            subscriber.onCompleted()
+                        },
+                        {
+                            subscriber.onError(it.exception)
+                        }
+                )
+            }
+
+    private fun createPostRequest(path: Path, body: RequestBody, subscriber: Subscriber<in Response>) =
+            PostRequest(path, body, config.requestConfiguration, prepare()).apply {
+                this.parameter = parameter
+                this.invoker = GarageRequest.Invoker(
+                        { garageResponse ->
+                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                                config.executorConfiguration.executor.enqueue(authRequest)
+                                return@Invoker
+                            }
+                            subscriber.onNext(garageResponse.response)
+                            subscriber.onCompleted()
+                        },
+                        {
+                            subscriber.onError(it.exception)
+                        }
+                )
+            }
+
+    private fun createDeleteRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
+            DeleteRequest(path, config.requestConfiguration, prepare()).apply {
+                this.parameter = parameter
+                this.invoker = GarageRequest.Invoker(
+                        { garageResponse ->
+                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                                config.executorConfiguration.executor.enqueue(authRequest)
+                                return@Invoker
+                            }
+                            subscriber.onNext(garageResponse.response)
+                            subscriber.onCompleted()
+                        },
+                        {
+                            subscriber.onError(it.exception)
+                        }
+                )
+            }
 
     private fun extractAuthRequest(request: GarageRequest, response: GarageResponse): GarageRequest? {
         authenticators.forEach {
