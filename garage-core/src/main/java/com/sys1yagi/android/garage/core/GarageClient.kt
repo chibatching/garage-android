@@ -65,7 +65,7 @@ class GarageClient(val config: GarageConfiguration) {
     }
 
     private fun requestOrAuth(request: GarageRequest) {
-        extractAuthRequest(request)?.let { authRequest ->
+        extractAuthRequestOnBeforeRequest(request)?.let { authRequest ->
             config.executorConfiguration.executor.enqueue(authRequest)
         } ?: config.executorConfiguration.executor.enqueue(request)
     }
@@ -84,7 +84,7 @@ class GarageClient(val config: GarageConfiguration) {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
                         { garageResponse ->
-                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                            extractAuthRequestOnReceiveResponse(this, garageResponse)?.let { authRequest ->
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
@@ -102,7 +102,7 @@ class GarageClient(val config: GarageConfiguration) {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
                         { garageResponse ->
-                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                            extractAuthRequestOnReceiveResponse(this, garageResponse)?.let { authRequest ->
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
@@ -120,7 +120,7 @@ class GarageClient(val config: GarageConfiguration) {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
                         { garageResponse ->
-                            extractAuthRequest(this, garageResponse)?.let { authRequest ->
+                            extractAuthRequestOnReceiveResponse(this, garageResponse)?.let { authRequest ->
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
@@ -133,7 +133,7 @@ class GarageClient(val config: GarageConfiguration) {
                 )
             }
 
-    private fun extractAuthRequest(request: GarageRequest, response: GarageResponse): GarageRequest? {
+    private fun extractAuthRequestOnReceiveResponse(request: GarageRequest, response: GarageResponse): GarageRequest? {
         authenticators.forEach {
             if (it.shouldAuthentication(response)) {
                 return it.createAuthRequest(
@@ -150,7 +150,7 @@ class GarageClient(val config: GarageConfiguration) {
         return null
     }
 
-    private fun extractAuthRequest(request: GarageRequest): GarageRequest? {
+    private fun extractAuthRequestOnBeforeRequest(request: GarageRequest): GarageRequest? {
         authenticators.forEach {
             if (it.shouldAuthentication(request)) {
                 return it.createAuthRequest(
