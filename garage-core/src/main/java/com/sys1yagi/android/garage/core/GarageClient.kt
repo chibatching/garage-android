@@ -91,8 +91,8 @@ class GarageClient(val config: GarageConfiguration) {
                             subscriber.onNext(garageResponse.response)
                             subscriber.onCompleted()
                         },
-                        {
-                            subscriber.onError(it.exception)
+                        { error ->
+                            subscriber.onError(error)
                         }
                 )
             }
@@ -109,8 +109,8 @@ class GarageClient(val config: GarageConfiguration) {
                             subscriber.onNext(garageResponse.response)
                             subscriber.onCompleted()
                         },
-                        {
-                            subscriber.onError(it.exception)
+                        { error ->
+                            subscriber.onError(error)
                         }
                 )
             }
@@ -127,8 +127,8 @@ class GarageClient(val config: GarageConfiguration) {
                             subscriber.onNext(garageResponse.response)
                             subscriber.onCompleted()
                         },
-                        {
-                            subscriber.onError(it.exception)
+                        { error ->
+                            subscriber.onError(error)
                         }
                 )
             }

@@ -48,12 +48,20 @@ open class DefaultAuthenticator(var userName: String, private val config: Authen
                 }
         ).apply {
             invoker = GarageRequest.Invoker(
-                    {
-                        val body = Gson().fromJson(it.response.body().string(), AuthResponseBody::class.java)
-                        container.accessToken = body.accessToken
-                        container.savedAt = System.currentTimeMillis()
-                        container.expired = body.expiresIn.toLong()
-                        success.invoke(it)
+                    { garageResponse ->
+                        if (garageResponse.response.isSuccessful) {
+                            println("succeess")
+                            val body = Gson().fromJson(garageResponse.response.body().string(), AuthResponseBody::class.java)
+                            container.accessToken = body.accessToken
+                            container.savedAt = System.currentTimeMillis()
+                            container.expired = body.expiresIn.toLong()
+                            success.invoke(garageResponse)
+                        } else {
+                            failed.invoke(GarageError().apply {
+                                this.call = garageResponse.call
+                                this.response = garageResponse.response
+                            })
+                        }
                     },
                     { error ->
                         failed.invoke(error)

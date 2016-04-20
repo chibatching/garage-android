@@ -121,4 +121,36 @@ class GarageClientTest {
         }
     }
 
+    @Test
+    fun notRetryWhenReceive401() {
+        given("Have a access token") {
+            accessTokenContainer.accessToken = "access token"
+            accessTokenContainer.savedAt = System.currentTimeMillis()
+            accessTokenContainer.expired = 1000000000L
+
+            on("Request to API and receive 401 x 2") {
+                mockWebServer.enqueue(MockResponse().setResponseCode(401))
+                mockWebServer.enqueue(MockResponse().setResponseCode(401))
+
+                val testSubscriber = TestSubscriber<Response>()
+                garageClient.get(Path("v1", "users/10")).subscribe(testSubscriber)
+                testSubscriber.awaitTerminalEvent(1000, TimeUnit.MILLISECONDS)
+
+                it("should receive 401") {
+                    mockWebServer.takeRequest(5, TimeUnit.MILLISECONDS).let {
+                        assertThat(it.path).isEqualTo("/v1/users/10")
+                    }
+                }
+                it("should do auth request") {
+                    mockWebServer.takeRequest(5, TimeUnit.MILLISECONDS).let {
+                        assertThat(it.path).isEqualTo("/oauth/token")
+                    }
+                }
+                it("should callback error to source request") {
+                    testSubscriber.assertError(Throwable::class.java)
+                }
+            }
+        }
+    }
+
 }

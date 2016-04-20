@@ -1,8 +1,10 @@
 package com.sys1yagi.android.garage.core.request
 
 import okhttp3.Call
+import okhttp3.Response
 
-open class GarageError {
-    lateinit var call: Call
-    lateinit var exception: Exception
+open class GarageError : Exception() {
+    var call: Call? = null
+    var response: Response? = null
+    var exception: Exception? = null
 }

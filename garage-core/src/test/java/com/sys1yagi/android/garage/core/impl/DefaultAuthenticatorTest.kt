@@ -183,7 +183,7 @@ class DefaultAuthenticatorTest {
                             // do wrap request
                         },
                         {
-                            fail(it.exception.message)
+                            fail(it.exception?.message)
                         },
                         {it}
                 )
@@ -193,7 +193,7 @@ class DefaultAuthenticatorTest {
                                 authRequest.invoker!!.callbackSuccess.invoke(it)
                             },
                             {
-                                fail(it.exception.message)
+                                fail(it.exception?.message)
                             }
                     )
                     it("should saved access token") {
