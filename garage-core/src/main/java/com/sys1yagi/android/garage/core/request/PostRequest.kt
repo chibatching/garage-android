@@ -36,9 +36,8 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
             success.invoke(GarageResponse(call, response))
         } catch(e: Exception) {
             failed.invoke(
-                    GarageError().apply {
+                    GarageError(e).apply {
                         this.call = call
-                        this.exception = e
                         if (config.isDebugMode) {
                             e.printStackTrace()
                         }

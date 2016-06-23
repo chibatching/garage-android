@@ -31,9 +31,8 @@ open class DeleteRequest(private val path: Path, private val config: RequestConf
             success.invoke(GarageResponse(call, response))
         } catch(e: IOException) {
             failed.invoke(
-                    GarageError().apply {
+                    GarageError(e).apply {
                         this.call = call
-                        this.exception = e
                     }
             )
         }

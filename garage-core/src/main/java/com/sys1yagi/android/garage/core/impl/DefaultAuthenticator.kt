@@ -57,7 +57,7 @@ open class DefaultAuthenticator(var userName: String, private val config: Authen
                             container.expired = body.expiresIn.toLong()
                             success.invoke(garageResponse)
                         } else {
-                            failed.invoke(GarageError().apply {
+                            failed.invoke(GarageError(null).apply {
                                 this.call = garageResponse.call
                                 this.response = garageResponse.response
                             })
