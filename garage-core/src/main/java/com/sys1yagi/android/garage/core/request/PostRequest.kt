@@ -13,7 +13,7 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
 
     override fun url(): String {
         with(config) {
-            return "${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "").apply {
+            return ("${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")).apply {
                 if (config.isDebugMode) {
                     Log.d(GarageClient.TAG, "POST:$this")
                 }
