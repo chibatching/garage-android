@@ -39,6 +39,9 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
                     GarageError().apply {
                         this.call = call
                         this.exception = e
+                        if (config.isDebugMode) {
+                            e.printStackTrace()
+                        }
                     }
             )
         }

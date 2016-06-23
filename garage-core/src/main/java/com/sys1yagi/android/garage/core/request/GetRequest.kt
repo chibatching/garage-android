@@ -37,6 +37,9 @@ open class GetRequest(private val path: Path, private val config: RequestConfigu
                     GarageError().apply {
                         this.call = call
                         this.exception = e
+                        if (config.isDebugMode) {
+                            e.printStackTrace()
+                        }
                     }
             )
         }
