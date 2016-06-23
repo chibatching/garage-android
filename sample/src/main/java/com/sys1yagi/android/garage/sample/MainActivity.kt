@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
                 RequestConfiguration(client, BuildConfig.garageEndpoint).apply {
                     customPort = 3000
                 },
-                authConfig,
                 ExecutorConfiguration(Executor()),
                 JsonConvertConfiguration(GsonConverter(Gson()))
         )).apply {
