@@ -3,6 +3,7 @@ package com.sys1yagi.android.garage.core
 import com.sys1yagi.android.garage.core.auth.Authenticator
 import com.sys1yagi.android.garage.core.config.GarageConfiguration
 import com.sys1yagi.android.garage.core.request.*
+import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
@@ -14,6 +15,9 @@ class GarageClient(val config: GarageConfiguration) {
 
     companion object {
         const val TAG = "garage-android"
+        val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
+        val MEDIA_TYPE_JSON: MediaType = MediaType.parse("application/json; charset=utf-8");
+
     }
 
     private val authenticators: ArrayList<Authenticator> = ArrayList()
