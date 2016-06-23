@@ -1,9 +1,10 @@
 package com.sys1yagi.android.garage.core.request
 
+import android.util.Log
+import com.sys1yagi.android.garage.core.GarageClient
 import com.sys1yagi.android.garage.core.config.RequestConfiguration
 import okhttp3.Call
 import okhttp3.Request
-import java.io.IOException
 
 open class GetRequest(private val path: Path, private val config: RequestConfiguration, val requestPreparing: (Request.Builder) -> Request.Builder = { it }) : GarageRequest() {
 
@@ -11,8 +12,11 @@ open class GetRequest(private val path: Path, private val config: RequestConfigu
 
     override fun url(): String {
         with(config) {
-            val url =  "${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")
-            return url
+            return "${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "").apply {
+                if (config.isDebugMode) {
+                    Log.d(GarageClient.TAG, "GET:$this")
+                }
+            }
         }
     }
 
@@ -28,7 +32,7 @@ open class GetRequest(private val path: Path, private val config: RequestConfigu
         try {
             val response = call.execute()
             success.invoke(GarageResponse(call, response))
-        } catch(e: IOException) {
+        } catch(e: Exception) {
             failed.invoke(
                     GarageError().apply {
                         this.call = call

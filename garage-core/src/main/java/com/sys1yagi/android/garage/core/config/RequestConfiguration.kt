@@ -9,6 +9,7 @@ open class RequestConfiguration(val client: OkHttpClient, val endpoint: String) 
 
     var scheme: Scheme = Scheme.HTTP
     var customPort: Int? = null
+    var isDebugMode: Boolean = false
 
     init {
         if (TextUtils.isEmpty(endpoint)) {
