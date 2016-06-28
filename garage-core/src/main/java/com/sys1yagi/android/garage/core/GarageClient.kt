@@ -26,14 +26,14 @@ open class GarageClient(val config: GarageConfiguration) {
         authenticators.add(authenticator)
     }
 
-    fun get(path: Path, parameter: Parameter? = null): Observable<Response> {
+    open fun get(path: Path, parameter: Parameter? = null): Observable<Response> {
         return Observable.create { subscriber ->
             val request = createGetRequest(path, parameter, subscriber)
             requestOrAuth(request)
         }
     }
 
-    fun post(path: Path, body: RequestBody): Observable<Response> {
+    open fun post(path: Path, body: RequestBody): Observable<Response> {
         return Observable.create { subscriber ->
             val request = createPostRequest(path, body, subscriber)
             requestOrAuth(request)
@@ -41,25 +41,25 @@ open class GarageClient(val config: GarageConfiguration) {
     }
 
 
-    fun head(): Observable<Response> {
+    open fun head(): Observable<Response> {
         return Observable.create {
 
         }
     }
 
-    fun put(): Observable<Response> {
+    open fun put(): Observable<Response> {
         return Observable.create {
 
         }
     }
 
-    fun patch(): Observable<Response> {
+    open fun patch(): Observable<Response> {
         return Observable.create {
 
         }
     }
 
-    fun delete(path: Path, parameter: Parameter? = null): Observable<Response> {
+    open fun delete(path: Path, parameter: Parameter? = null): Observable<Response> {
         return Observable.create { subscriber ->
             val request = createDeleteRequest(path, parameter, subscriber)
             requestOrAuth(request)
