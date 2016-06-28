@@ -11,7 +11,7 @@ import rx.Observable
 import rx.Subscriber
 import java.util.*
 
-class GarageClient(val config: GarageConfiguration) {
+open class GarageClient(val config: GarageConfiguration) {
 
     companion object {
         const val TAG = "garage-android"
