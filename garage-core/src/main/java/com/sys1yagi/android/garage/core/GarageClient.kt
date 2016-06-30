@@ -17,6 +17,7 @@ open class GarageClient(val config: GarageConfiguration) {
         const val TAG = "garage-android"
         val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
         val MEDIA_TYPE_JSON: MediaType = MediaType.parse("application/json; charset=utf-8");
+        val MEDIA_TYPE_TEXT: MediaType = MediaType.parse("text/plain; charset=utf-8");
 
     }
 
@@ -47,9 +48,10 @@ open class GarageClient(val config: GarageConfiguration) {
         }
     }
 
-    open fun put(): Observable<Response> {
-        return Observable.create {
-
+    open fun put(path: Path, body: RequestBody): Observable<Response> {
+        return Observable.create { subscriber ->
+            val request = createPutRequest(path, body, subscriber)
+            requestOrAuth(request)
         }
     }
 
@@ -117,6 +119,23 @@ open class GarageClient(val config: GarageConfiguration) {
                 )
             }
 
+    private fun createPutRequest(path: Path, body: RequestBody, subscriber: Subscriber<in Response>) =
+            PutRequest(path, body, config.requestConfiguration, prepare()).apply {
+                this.parameter = parameter
+                this.invoker = GarageRequest.Invoker(
+                        { garageResponse ->
+                            extractAuthRequestOnReceiveResponse(this, garageResponse)?.let { authRequest ->
+                                config.executorConfiguration.executor.enqueue(authRequest)
+                                return@Invoker
+                            }
+                            subscriber.onNext(garageResponse.response)
+                            subscriber.onCompleted()
+                        },
+                        { error ->
+                            subscriber.onError(error)
+                        }
+                )
+            }
     private fun createDeleteRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
             DeleteRequest(path, config.requestConfiguration, prepare()).apply {
                 this.parameter = parameter

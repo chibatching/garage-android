@@ -7,7 +7,7 @@ import okhttp3.Call
 import okhttp3.Request
 import okhttp3.RequestBody
 
-open class PostRequest(private val path: Path, private val requestBody: RequestBody, private val config: RequestConfiguration, val requestPreparing: (Request.Builder) -> Request.Builder = { it }) : GarageRequest() {
+open class PutRequest(private val path: Path, private val requestBody: RequestBody, private val config: RequestConfiguration, val requestPreparing: (Request.Builder) -> Request.Builder = { it }) : GarageRequest() {
 
     var parameter: Parameter? = null
 
@@ -15,7 +15,7 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
         with(config) {
             return ("${scheme.value}://${endpoint}:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")).apply {
                 if (config.isDebugMode) {
-                    Log.d(GarageClient.TAG, "POST:$this")
+                    Log.d(GarageClient.TAG, "PUT:$this")
                 }
             }
         }
@@ -25,7 +25,7 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
         return config.client.newCall(
                 requestProcessing(Request.Builder())
                         .url(url())
-                        .post(requestBody)
+                        .put(requestBody)
                         .build())
     }
 
