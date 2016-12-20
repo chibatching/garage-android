@@ -19,7 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import rx.observers.TestSubscriber
+import io.reactivex.subscribers.TestSubscriber
 import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
@@ -64,8 +64,7 @@ class GarageClientTest {
                         .setBody("{\"access_token\":\"access token\",\"token_type\":\"bearer\",\"expires_in\":7200,\"scope\":\"public\"}"))
                 mockWebServer.enqueue(MockResponse().setResponseCode(200))
 
-                val testSubscriber = TestSubscriber<Response>()
-                garageClient.get(Path("v1", "users/10")).subscribe(testSubscriber)
+                val testSubscriber = garageClient.get(Path("v1", "users/10")).test()
                 testSubscriber.awaitTerminalEvent(1000, TimeUnit.MILLISECONDS)
                 testSubscriber.assertNoErrors()
 
@@ -97,8 +96,7 @@ class GarageClientTest {
                         .setBody("{\"access_token\":\"token\",\"token_type\":\"bearer\",\"expires_in\":7200,\"scope\":\"public\"}"))
                 mockWebServer.enqueue(MockResponse().setResponseCode(200))
 
-                val testSubscriber = TestSubscriber<Response>()
-                garageClient.get(Path("v1", "users/10")).subscribe(testSubscriber)
+                val testSubscriber = garageClient.get(Path("v1", "users/10")).test()
                 testSubscriber.awaitTerminalEvent(1000, TimeUnit.MILLISECONDS)
                 testSubscriber.assertNoErrors()
 
@@ -132,8 +130,7 @@ class GarageClientTest {
                 mockWebServer.enqueue(MockResponse().setResponseCode(401))
                 mockWebServer.enqueue(MockResponse().setResponseCode(401))
 
-                val testSubscriber = TestSubscriber<Response>()
-                garageClient.get(Path("v1", "users/10")).subscribe(testSubscriber)
+                val testSubscriber = garageClient.get(Path("v1", "users/10")).test()
                 testSubscriber.awaitTerminalEvent(1000, TimeUnit.MILLISECONDS)
 
                 it("should receive 401") {

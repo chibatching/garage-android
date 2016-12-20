@@ -3,12 +3,12 @@ package com.sys1yagi.android.garage.core
 import com.sys1yagi.android.garage.core.auth.Authenticator
 import com.sys1yagi.android.garage.core.config.GarageConfiguration
 import com.sys1yagi.android.garage.core.request.*
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-import rx.Observable
-import rx.Subscriber
 import java.util.*
 
 open class GarageClient(val config: GarageConfiguration) {
@@ -28,15 +28,15 @@ open class GarageClient(val config: GarageConfiguration) {
     }
 
     open fun get(path: Path, parameter: Parameter? = null): Observable<Response> {
-        return Observable.create { subscriber ->
-            val request = createGetRequest(path, parameter, subscriber)
+        return Observable.create { emitter ->
+            val request = createGetRequest(path, parameter, emitter)
             requestOrAuth(request)
         }
     }
 
     open fun post(path: Path, body: RequestBody): Observable<Response> {
-        return Observable.create { subscriber ->
-            val request = createPostRequest(path, body, subscriber)
+        return Observable.create { emitter ->
+            val request = createPostRequest(path, body, emitter)
             requestOrAuth(request)
         }
     }
@@ -49,8 +49,8 @@ open class GarageClient(val config: GarageConfiguration) {
     }
 
     open fun put(path: Path, body: RequestBody): Observable<Response> {
-        return Observable.create { subscriber ->
-            val request = createPutRequest(path, body, subscriber)
+        return Observable.create { emitter ->
+            val request = createPutRequest(path, body, emitter)
             requestOrAuth(request)
         }
     }
@@ -62,8 +62,8 @@ open class GarageClient(val config: GarageConfiguration) {
     }
 
     open fun delete(path: Path, parameter: Parameter? = null): Observable<Response> {
-        return Observable.create { subscriber ->
-            val request = createDeleteRequest(path, parameter, subscriber)
+        return Observable.create { emitter ->
+            val request = createDeleteRequest(path, parameter, emitter)
             requestOrAuth(request)
         }
     }
@@ -83,7 +83,7 @@ open class GarageClient(val config: GarageConfiguration) {
         }
     }
 
-    private fun createGetRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
+    private fun createGetRequest(path: Path, parameter: Parameter?, emitter: ObservableEmitter<in Response>) =
             GetRequest(path, config.requestConfiguration, prepare()).apply {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
@@ -92,16 +92,16 @@ open class GarageClient(val config: GarageConfiguration) {
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
-                            subscriber.onNext(garageResponse.response)
-                            subscriber.onCompleted()
+                            emitter.onNext(garageResponse.response)
+                            emitter.onComplete()
                         },
                         { error ->
-                            subscriber.onError(error)
+                            emitter.onError(error)
                         }
                 )
             }
 
-    private fun createPostRequest(path: Path, body: RequestBody, subscriber: Subscriber<in Response>) =
+    private fun createPostRequest(path: Path, body: RequestBody, emitter: ObservableEmitter<in Response>) =
             PostRequest(path, body, config.requestConfiguration, prepare()).apply {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
@@ -110,16 +110,16 @@ open class GarageClient(val config: GarageConfiguration) {
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
-                            subscriber.onNext(garageResponse.response)
-                            subscriber.onCompleted()
+                            emitter.onNext(garageResponse.response)
+                            emitter.onComplete()
                         },
                         { error ->
-                            subscriber.onError(error)
+                            emitter.onError(error)
                         }
                 )
             }
 
-    private fun createPutRequest(path: Path, body: RequestBody, subscriber: Subscriber<in Response>) =
+    private fun createPutRequest(path: Path, body: RequestBody, emitter: ObservableEmitter<in Response>) =
             PutRequest(path, body, config.requestConfiguration, prepare()).apply {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
@@ -128,15 +128,15 @@ open class GarageClient(val config: GarageConfiguration) {
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
-                            subscriber.onNext(garageResponse.response)
-                            subscriber.onCompleted()
+                            emitter.onNext(garageResponse.response)
+                            emitter.onComplete()
                         },
                         { error ->
-                            subscriber.onError(error)
+                            emitter.onError(error)
                         }
                 )
             }
-    private fun createDeleteRequest(path: Path, parameter: Parameter?, subscriber: Subscriber<in Response>) =
+    private fun createDeleteRequest(path: Path, parameter: Parameter?, emitter: ObservableEmitter<in Response>) =
             DeleteRequest(path, config.requestConfiguration, prepare()).apply {
                 this.parameter = parameter
                 this.invoker = GarageRequest.Invoker(
@@ -145,11 +145,11 @@ open class GarageClient(val config: GarageConfiguration) {
                                 config.executorConfiguration.executor.enqueue(authRequest)
                                 return@Invoker
                             }
-                            subscriber.onNext(garageResponse.response)
-                            subscriber.onCompleted()
+                            emitter.onNext(garageResponse.response)
+                            emitter.onComplete()
                         },
                         { error ->
-                            subscriber.onError(error)
+                            emitter.onError(error)
                         }
                 )
             }
