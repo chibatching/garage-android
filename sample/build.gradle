@@ -16,14 +16,14 @@ def loadProperties(filename) {
 def garageProperties = loadProperties("garage.properties")
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     dataBinding.enabled = true
     defaultConfig {
         applicationId "com.sys1yagi.android.garage.sample"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
