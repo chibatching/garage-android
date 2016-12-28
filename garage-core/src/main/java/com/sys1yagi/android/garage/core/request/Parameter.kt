@@ -1,5 +1,6 @@
 package com.sys1yagi.android.garage.core.request
 
+import java.net.URLEncoder
 import java.util.*
 
 class Parameter {
@@ -18,7 +19,7 @@ class Parameter {
     fun build(): String =
             parameters
                     .map {
-                        "${it.first}=${it.second}"
+                        "${it.first}=${URLEncoder.encode(it.second, "utf-8")}"
                     }
                     .reduce {
                         a, b ->
