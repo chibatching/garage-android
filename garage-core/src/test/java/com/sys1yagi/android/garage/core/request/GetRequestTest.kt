@@ -35,4 +35,14 @@ class GetRequestTest {
         }
         assertThat(request.url()).isEqualTo("http://test.com:80/v1/users?version_code=10&type=android")
     }
+
+    @Test
+    fun escapeParameters(){
+        val request = GetRequest(Path("v1", "users"), RequestConfiguration(OkHttpClient(), "test.com")).apply {
+            parameter = Parameter()
+                    .append("version_code", 10)
+                    .append("comment", "hello world&kotlin")
+        }
+        assertThat(request.url()).isEqualTo("http://test.com:80/v1/users?version_code=10&comment=hello+world%26kotlin")
+    }
 }
