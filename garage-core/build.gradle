@@ -48,7 +48,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.0.44-beta'
 }
 buildscript {
-    ext.kotlin_version = '1.0.2'
+    ext.kotlin_version = '1.0.6'
     ext.powermockito_version = '1.6.4'
     repositories {
         mavenCentral()
