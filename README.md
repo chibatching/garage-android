@@ -1,7 +1,7 @@
 Garage for Android
 =================
 
-[![Circle CI](https://circleci.com/gh/sys1yagi/garage-android.svg?style=svg)](https://circleci.com/gh/sys1yagi/garage-android)
+[![wercker status](https://app.wercker.com/status/5e969f5295d1dc1f149e621e9bb9e5e6/s/master "wercker status")](https://app.wercker.com/project/byKey/5e969f5295d1dc1f149e621e9bb9e5e6)
 [![](https://jitpack.io/v/sys1yagi/garage-android.svg?style=flat-square)](https://jitpack.io/#sys1yagi/garage-android)
 
 # setup
