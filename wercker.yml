@@ -1,0 +1,23 @@
+box: chibatching/docker-android-sdk
+
+build:
+  steps:
+    - script:
+        name: set android sdk location
+        code: |
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+    - script:
+        name: setup cache
+        code: |
+            mkdir -p $WERCKER_CACHE_DIR/.gradle
+            ln -sf $WERCKER_CACHE_DIR/.gradle ~/.gradle
+    - script:
+        name: run lint
+        code: |
+          ./gradlew --stacktrace garage-core:lint
+          cp ./garage-core/build/reports/lint-* $WERCKER_REPORT_ARTIFACTS_DIR/
+    - script:
+        name: run unit test
+        code: |
+          ./gradlew --stacktrace garage-core:test
+          cp -r ./garage-core/build/reports/tests/* $WERCKER_REPORT_ARTIFACTS_DIR/
