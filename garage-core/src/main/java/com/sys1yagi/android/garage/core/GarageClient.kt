@@ -41,7 +41,6 @@ open class GarageClient(val config: GarageConfiguration) {
         }
     }
 
-
     open fun head(): Observable<Response> {
         return Observable.create {
 
