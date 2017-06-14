@@ -7,6 +7,8 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 
+typealias RequestBefore = (Request.Builder) -> Request.Builder
+
 open class GarageClient2(val config: Config) {
     val authenticators = arrayListOf<Authenticator>()
 
@@ -14,7 +16,7 @@ open class GarageClient2(val config: Config) {
         authenticators.add(authenticator)
     }
 
-    private fun prepare(): (Request.Builder) -> Request.Builder {
+    private fun prepare(): RequestBefore {
         return { builder ->
             authenticators.forEach {
                 it.requestPreparing(builder)
@@ -24,18 +26,20 @@ open class GarageClient2(val config: Config) {
     }
 
     fun get(path: Path, parameter: Parameter? = null): Response {
-        val request = GetRequest(path, config, prepare())
+        val before = prepare()
+        val request = GetRequest(path, config, before)
         authenticators.forEach {
-            it.authenticationIfNeeded(request)
+            it.authenticationIfNeeded(request, before)
         }
         val response = request.execute()
         return response
     }
 
     open fun post(path: Path, body: RequestBody): Response {
-        val request = PostRequest(path, body, config, prepare())
+        val before = prepare()
+        val request = PostRequest(path, body, config, before)
         authenticators.forEach {
-            it.authenticationIfNeeded(request)
+            it.authenticationIfNeeded(request, before)
         }
         val response = request.execute()
         return response
