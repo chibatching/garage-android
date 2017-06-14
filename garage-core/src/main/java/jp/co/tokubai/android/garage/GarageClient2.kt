@@ -24,7 +24,7 @@ open class GarageClient2(val config: Config) {
     }
 
     fun get(path: Path, parameter: Parameter? = null): Response {
-        val request = GetRequest2(path, config, prepare())
+        val request = GetRequest(path, config, prepare())
         authenticators.forEach {
             it.authenticationIfNeeded(request)
         }
@@ -33,7 +33,12 @@ open class GarageClient2(val config: Config) {
     }
 
     open fun post(path: Path, body: RequestBody): Response {
-        TODO()
+        val request = PostRequest(path, body, config, prepare())
+        authenticators.forEach {
+            it.authenticationIfNeeded(request)
+        }
+        val response = request.execute()
+        return response
     }
 
     open fun head(): Observable<Response> {
