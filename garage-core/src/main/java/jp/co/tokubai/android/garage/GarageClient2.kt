@@ -27,7 +27,9 @@ open class GarageClient2(val config: Config) {
 
     fun get(path: Path, parameter: Parameter? = null): Response {
         val before = prepare()
-        val request = GetRequest(path, config, before)
+        val request = GetRequest(path, config, before).apply {
+            this.parameter = parameter
+        }
         authenticators.forEach {
             it.authenticationIfNeeded(request, before)
         }
