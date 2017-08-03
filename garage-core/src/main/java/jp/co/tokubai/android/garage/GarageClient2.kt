@@ -54,7 +54,13 @@ open class GarageClient2(val config: Config) {
     }
 
     open fun put(path: Path, body: RequestBody): Response {
-        TODO()
+        val before = prepare()
+        val request = PutRequest(path, body, config, before)
+        authenticators.forEach {
+            it.authenticationIfNeeded(request, before)
+        }
+        val response = request.execute()
+        return response
     }
 
     open fun patch(): Response {
@@ -62,6 +68,14 @@ open class GarageClient2(val config: Config) {
     }
 
     open fun delete(path: Path, parameter: Parameter? = null): Response {
-        TODO()
+        val before = prepare()
+        val request = DeleteRequest(path, config, before).apply {
+            this.parameter = parameter
+        }
+        authenticators.forEach {
+            it.authenticationIfNeeded(request, before)
+        }
+        val response = request.execute()
+        return response
     }
 }
