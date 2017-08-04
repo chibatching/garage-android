@@ -11,4 +11,8 @@ open class Path(private val versionName: String, private val path: String) {
             return "$versionName/$path"
         }
     }
+
+    // TODO
+    // for test
+    constructor() : this("", "")
 }
