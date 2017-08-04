@@ -46,7 +46,7 @@ open class GarageClient2(val config: Config) {
         throw GarageError(null)
     }
 
-    fun get(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
+    open fun get(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
         return request {
             val before = prepare()
             val request = GetRequest(path, config, before).apply {
