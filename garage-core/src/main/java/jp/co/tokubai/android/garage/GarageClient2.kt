@@ -1,5 +1,6 @@
 package jp.co.tokubai.android.garage
 
+import com.sys1yagi.android.garage.core.request.GarageError
 import com.sys1yagi.android.garage.core.request.Parameter
 import com.sys1yagi.android.garage.core.request.Path
 import io.reactivex.Observable
@@ -25,26 +26,42 @@ open class GarageClient2(val config: Config) {
         }
     }
 
-    fun get(path: Path, parameter: Parameter? = null): Response {
-        val before = prepare()
-        val request = GetRequest(path, config, before).apply {
-            this.parameter = parameter
+    inline fun request(authRetryMaxCount: Int = 1, requestSet: () -> Pair<RequestBefore, GarageRequest>): Response {
+        var count = 0
+        while (count <= authRetryMaxCount) {
+            val (before, request) = requestSet()
+            authenticators.forEach {
+                it.authenticationIfNeeded(request, before)
+            }
+            val response = request.execute()
+
+            if (authenticators.count {
+                it.authenticationIfNeeded(request, response)
+            } > 0) {
+                count++
+            } else {
+                return response
+            }
         }
-        authenticators.forEach {
-            it.authenticationIfNeeded(request, before)
-        }
-        val response = request.execute()
-        return response
+        throw GarageError(null)
     }
 
-    open fun post(path: Path, body: RequestBody): Response {
-        val before = prepare()
-        val request = PostRequest(path, body, config, before)
-        authenticators.forEach {
-            it.authenticationIfNeeded(request, before)
+    fun get(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
+        return request {
+            val before = prepare()
+            val request = GetRequest(path, config, before).apply {
+                this.parameter = parameter
+            }
+            Pair(before, request)
         }
-        val response = request.execute()
-        return response
+    }
+
+    open fun post(path: Path, body: RequestBody, authRetryMaxCount: Int = 1): Response {
+        return request {
+            val before = prepare()
+            val request = PostRequest(path, body, config, before)
+            Pair(before, request)
+        }
     }
 
     open fun head(): Observable<Response> {
@@ -53,29 +70,25 @@ open class GarageClient2(val config: Config) {
         }
     }
 
-    open fun put(path: Path, body: RequestBody): Response {
-        val before = prepare()
-        val request = PutRequest(path, body, config, before)
-        authenticators.forEach {
-            it.authenticationIfNeeded(request, before)
+    open fun put(path: Path, body: RequestBody, authRetryMaxCount: Int = 1): Response {
+        return request {
+            val before = prepare()
+            val request = PutRequest(path, body, config, before)
+            Pair(before, request)
         }
-        val response = request.execute()
-        return response
     }
 
     open fun patch(): Response {
         TODO()
     }
 
-    open fun delete(path: Path, parameter: Parameter? = null): Response {
-        val before = prepare()
-        val request = DeleteRequest(path, config, before).apply {
-            this.parameter = parameter
+    open fun delete(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
+        return request {
+            val before = prepare()
+            val request = DeleteRequest(path, config, before).apply {
+                this.parameter = parameter
+            }
+            Pair(before, request)
         }
-        authenticators.forEach {
-            it.authenticationIfNeeded(request, before)
-        }
-        val response = request.execute()
-        return response
     }
 }
