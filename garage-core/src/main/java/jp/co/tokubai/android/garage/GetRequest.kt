@@ -33,7 +33,11 @@ class GetRequest(private val path: Path, private val config: Config, val request
     override fun execute(): Response {
         val call = newCall(requestPreparing)
         try {
-            return call.execute()
+            return call.execute().apply {
+                if (config.isDebugMode) {
+                    Log.d(GarageClient.TAG, "GET ${this.code()} ${this.request().url()}")
+                }
+            }
         } catch(e: Exception) {
             throw GarageError(e).apply {
                 this.call = call

@@ -35,7 +35,11 @@ open class PutRequest(private val path: Path, private val requestBody: RequestBo
     override fun execute(): Response {
         val call = newCall(requestPreparing)
         try {
-            return call.execute()
+            return call.execute().apply {
+                if (config.isDebugMode) {
+                    Log.d(GarageClient.TAG, "PUT ${this.code()} ${this.request().url()}")
+                }
+            }
         } catch(e: Exception) {
             throw GarageError(e).apply {
                 this.call = call

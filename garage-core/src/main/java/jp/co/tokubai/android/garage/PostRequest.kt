@@ -35,7 +35,11 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
     override fun execute(): Response {
         val call = newCall(requestPreparing)
         try {
-            return call.execute()
+            return call.execute().apply{
+                if (config.isDebugMode) {
+                    Log.d(GarageClient.TAG, "POST ${this.code()} ${this.request().url()}")
+                }
+            }
         } catch(e: Exception) {
             throw GarageError(e).apply {
                 this.call = call
