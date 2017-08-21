@@ -1,7 +1,6 @@
 package jp.co.tokubai.android.garage
 
 import android.text.TextUtils
-import com.sys1yagi.android.garage.core.request.Scheme
 import okhttp3.OkHttpClient
 
 data class Config(val client: OkHttpClient, val endpoint: String) {

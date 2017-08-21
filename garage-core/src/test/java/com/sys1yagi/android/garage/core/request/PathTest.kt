@@ -1,5 +1,6 @@
 package com.sys1yagi.android.garage.core.request
 
+import jp.co.tokubai.android.garage.Path
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

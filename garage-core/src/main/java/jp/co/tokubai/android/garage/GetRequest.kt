@@ -1,11 +1,6 @@
 package jp.co.tokubai.android.garage
 
 import android.util.Log
-import com.sys1yagi.android.garage.core.GarageClient
-import com.sys1yagi.android.garage.core.request.GarageError
-import com.sys1yagi.android.garage.core.request.GarageResponse
-import com.sys1yagi.android.garage.core.request.Parameter
-import com.sys1yagi.android.garage.core.request.Path
 import okhttp3.Call
 import okhttp3.Request
 import okhttp3.Response

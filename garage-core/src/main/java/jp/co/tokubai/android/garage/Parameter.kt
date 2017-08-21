@@ -1,4 +1,4 @@
-package com.sys1yagi.android.garage.core.request
+package jp.co.tokubai.android.garage
 
 import java.net.URLEncoder
 import java.util.*

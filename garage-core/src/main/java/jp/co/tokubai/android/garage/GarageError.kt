@@ -1,4 +1,4 @@
-package com.sys1yagi.android.garage.core.request
+package jp.co.tokubai.android.garage
 
 import okhttp3.Call
 import okhttp3.Response

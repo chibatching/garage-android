@@ -1,16 +1,21 @@
 package jp.co.tokubai.android.garage
 
-import com.sys1yagi.android.garage.core.request.GarageError
-import com.sys1yagi.android.garage.core.request.Parameter
-import com.sys1yagi.android.garage.core.request.Path
 import io.reactivex.Observable
+import okhttp3.MediaType
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 
-typealias RequestBefore = (Request.Builder) -> Request.Builder
+open class GarageClient(val config: Config) {
 
-open class GarageClient2(val config: Config) {
+    companion object {
+        const val TAG = "garage-android"
+        val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
+        val MEDIA_TYPE_JSON: MediaType = MediaType.parse("application/json; charset=utf-8");
+        val MEDIA_TYPE_TEXT: MediaType = MediaType.parse("text/plain; charset=utf-8");
+
+    }
+
     val authenticators = arrayListOf<Authenticator>()
 
     fun addAuthenticator(authenticator: Authenticator) {
