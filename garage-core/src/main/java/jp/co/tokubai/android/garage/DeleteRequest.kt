@@ -12,7 +12,7 @@ class DeleteRequest(private val path: Path, private val config: Config, val requ
         with(config) {
             return ("${scheme.value}://$endpoint:${customPort ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" } ?: "")).apply {
                 if (config.isDebugMode) {
-                    Log.d(GarageClient.TAG, "GET:$this")
+                    Log.d(GarageClient.TAG, "DELETE:$this")
                 }
             }
         }
