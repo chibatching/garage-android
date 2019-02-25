@@ -1,8 +1,6 @@
 package jp.co.tokubai.android.garage
 
-import io.reactivex.Observable
 import okhttp3.MediaType
-import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 
@@ -41,8 +39,8 @@ open class GarageClient(val config: Config) {
             val response = request.execute()
 
             if (authenticators.count {
-                it.authenticationIfNeeded(request, response)
-            } > 0) {
+                        it.authenticationIfNeeded(request, response)
+                    } > 0) {
                 count++
             } else {
                 return response
@@ -69,10 +67,8 @@ open class GarageClient(val config: Config) {
         }
     }
 
-    open fun head(): Observable<Response> {
-        return Observable.create {
-
-        }
+    open fun head(): Response {
+        TODO()
     }
 
     open fun put(path: Path, body: RequestBody, authRetryMaxCount: Int = 1): Response {

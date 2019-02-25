@@ -1,1 +1,1 @@
-include ':garage-core', ':processor'
+include ':garage-core'
