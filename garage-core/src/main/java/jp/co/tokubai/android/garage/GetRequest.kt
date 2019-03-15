@@ -10,14 +10,18 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class GetRequest(private val path: Path, private val config: Config, val requestPreparing: (Request.Builder) -> Request.Builder = { it }) : GarageRequest() {
+class GetRequest(
+    private val path: Path,
+    private val config: Config,
+    val requestPreparing: (Request.Builder) -> Request.Builder = { it }
+) : GarageRequest() {
     var parameter: Parameter? = null
 
     override fun url(): String {
         with(config) {
             return ("${scheme.value}://$endpoint:${customPort
-                    ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" }
-                    ?: "")).apply {
+                ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" }
+                ?: "")).apply {
                 if (config.isDebugMode) {
                     Log.d(GarageClient.TAG, "GET:$this")
                 }
@@ -27,9 +31,10 @@ class GetRequest(private val path: Path, private val config: Config, val request
 
     override fun newCall(requestProcessing: (Request.Builder) -> Request.Builder): Call {
         return config.client.newCall(
-                requestProcessing(Request.Builder())
-                        .url(url())
-                        .build())
+            requestProcessing(Request.Builder())
+                .url(url())
+                .build()
+        )
     }
 
     override suspend fun execute(): Response = suspendCancellableCoroutine { continuation ->

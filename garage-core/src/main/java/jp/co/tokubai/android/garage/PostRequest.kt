@@ -7,15 +7,20 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-open class PostRequest(private val path: Path, private val requestBody: RequestBody, private val config: Config, val requestPreparing: (Request.Builder) -> Request.Builder = { it }) : GarageRequest() {
+open class PostRequest(
+    private val path: Path,
+    private val requestBody: RequestBody,
+    private val config: Config,
+    val requestPreparing: (Request.Builder) -> Request.Builder = { it }
+) : GarageRequest() {
 
     var parameter: Parameter? = null
 
     override fun url(): String {
         with(config) {
             return ("${scheme.value}://${endpoint}:${customPort
-                    ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" }
-                    ?: "")).apply {
+                ?: scheme.port}/${path.to()}" + (parameter?.let { "?${it.build()}" }
+                ?: "")).apply {
                 if (config.isDebugMode) {
                     Log.d(GarageClient.TAG, "POST:$this")
                 }
@@ -25,10 +30,11 @@ open class PostRequest(private val path: Path, private val requestBody: RequestB
 
     override fun newCall(requestProcessing: (Request.Builder) -> Request.Builder): Call {
         return config.client.newCall(
-                requestProcessing(Request.Builder())
-                        .url(url())
-                        .post(requestBody)
-                        .build())
+            requestProcessing(Request.Builder())
+                .url(url())
+                .post(requestBody)
+                .build()
+        )
     }
 
     override suspend fun execute(): Response = suspendCancellableCoroutine { continuation ->

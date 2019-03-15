@@ -8,7 +8,8 @@ open class GarageClient(val config: Config) {
 
     companion object {
         const val TAG = "garage-android"
-        val MEDIA_TYPE_FORM_URLENCODED: MediaType = MediaType.get("application/x-www-form-urlencoded; charset=utf-8")
+        val MEDIA_TYPE_FORM_URLENCODED: MediaType =
+            MediaType.get("application/x-www-form-urlencoded; charset=utf-8")
         val MEDIA_TYPE_JSON: MediaType = MediaType.get("application/json; charset=utf-8")
         val MEDIA_TYPE_TEXT: MediaType = MediaType.get("text/plain; charset=utf-8")
     }
@@ -28,7 +29,10 @@ open class GarageClient(val config: Config) {
         }
     }
 
-    suspend inline fun request(authRetryMaxCount: Int = 1, requestSet: () -> Pair<RequestBefore, GarageRequest>): Response {
+    suspend inline fun request(
+        authRetryMaxCount: Int = 1,
+        requestSet: () -> Pair<RequestBefore, GarageRequest>
+    ): Response {
         var count = 0
         while (count <= authRetryMaxCount) {
             val (before, request) = requestSet()
@@ -38,8 +42,8 @@ open class GarageClient(val config: Config) {
             val response = request.execute()
 
             if (authenticators.count {
-                        it.authenticationIfNeeded(request, response)
-                    } > 0) {
+                    it.authenticationIfNeeded(request, response)
+                } > 0) {
                 count++
             } else {
                 return response
@@ -48,7 +52,11 @@ open class GarageClient(val config: Config) {
         throw GarageError(null)
     }
 
-    open suspend fun get(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
+    open suspend fun get(
+        path: Path,
+        parameter: Parameter? = null,
+        authRetryMaxCount: Int = 1
+    ): Response {
         return request {
             val before = prepare()
             val request = GetRequest(path, config, before).apply {
@@ -82,7 +90,11 @@ open class GarageClient(val config: Config) {
         TODO()
     }
 
-    open suspend fun delete(path: Path, parameter: Parameter? = null, authRetryMaxCount: Int = 1): Response {
+    open suspend fun delete(
+        path: Path,
+        parameter: Parameter? = null,
+        authRetryMaxCount: Int = 1
+    ): Response {
         return request {
             val before = prepare()
             val request = DeleteRequest(path, config, before).apply {
