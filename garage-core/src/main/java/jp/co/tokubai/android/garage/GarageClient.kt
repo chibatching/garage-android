@@ -1,6 +1,7 @@
 package jp.co.tokubai.android.garage
 
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.Response
 
@@ -9,9 +10,9 @@ open class GarageClient(val config: Config) {
     companion object {
         const val TAG = "garage-android"
         val MEDIA_TYPE_FORM_URLENCODED: MediaType =
-            MediaType.get("application/x-www-form-urlencoded; charset=utf-8")
-        val MEDIA_TYPE_JSON: MediaType = MediaType.get("application/json; charset=utf-8")
-        val MEDIA_TYPE_TEXT: MediaType = MediaType.get("text/plain; charset=utf-8")
+            "application/x-www-form-urlencoded; charset=utf-8".toMediaType()
+        val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()
+        val MEDIA_TYPE_TEXT: MediaType = "text/plain; charset=utf-8".toMediaType()
     }
 
     val authenticators = arrayListOf<Authenticator>()

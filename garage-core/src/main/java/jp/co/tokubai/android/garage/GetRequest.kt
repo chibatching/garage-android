@@ -41,7 +41,7 @@ class GetRequest(
         val call = newCall(requestPreparing)
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                if (continuation.isActive && !call.isCanceled) {
+                if (continuation.isActive && !call.isCanceled()) {
                     continuation.resumeWithException(GarageError(e).apply {
                         this.call = call
                         if (config.isDebugMode) {
@@ -53,7 +53,7 @@ class GetRequest(
 
             override fun onResponse(call: Call, response: Response) {
                 if (config.isDebugMode) {
-                    Log.d(GarageClient.TAG, "GET ${response.code()} ${response.request().url()}")
+                    Log.d(GarageClient.TAG, "GET ${response.code} ${response.request.url}")
                 }
                 continuation.resume(response)
             }

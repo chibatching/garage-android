@@ -41,7 +41,7 @@ open class PostRequest(
         val call = newCall(requestPreparing)
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                if (continuation.isActive && !call.isCanceled) {
+                if (continuation.isActive && !call.isCanceled()) {
                     continuation.resumeWithException(GarageError(e).apply {
                         this.call = call
                         if (config.isDebugMode) {
@@ -53,7 +53,7 @@ open class PostRequest(
 
             override fun onResponse(call: Call, response: Response) {
                 if (config.isDebugMode) {
-                    Log.d(GarageClient.TAG, "POST ${response.code()} ${response.request().url()}")
+                    Log.d(GarageClient.TAG, "POST ${response.code} ${response.request.url}")
                 }
                 continuation.resume(response)
             }
