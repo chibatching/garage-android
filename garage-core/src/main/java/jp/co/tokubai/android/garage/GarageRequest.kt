@@ -7,6 +7,6 @@ import okhttp3.Response
 abstract class GarageRequest {
     abstract fun url(): String
     abstract fun newCall(requestProcessing: (Request.Builder) -> Request.Builder): Call
-    abstract fun execute(): Response
+    abstract suspend fun execute(): Response
     abstract fun requestTime(): Long
 }

@@ -17,14 +17,13 @@ class Parameter {
     fun append(key: String, value: Long): Parameter = append(key, value.toString())
 
     fun build(): String =
-            parameters
-                    .map {
-                        "${it.first}=${URLEncoder.encode(it.second, "utf-8")}"
-                    }
-                    .reduce {
-                        a, b ->
-                        "$a&$b"
-                    }
+        parameters
+            .map {
+                "${it.first}=${URLEncoder.encode(it.second, "utf-8")}"
+            }
+            .reduce { a, b ->
+                "$a&$b"
+            }
 
 }
 
