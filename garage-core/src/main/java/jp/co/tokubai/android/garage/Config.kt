@@ -1,6 +1,5 @@
 package jp.co.tokubai.android.garage
 
-import android.text.TextUtils
 import okhttp3.OkHttpClient
 
 data class Config(val client: OkHttpClient, val endpoint: String) {
@@ -9,7 +8,7 @@ data class Config(val client: OkHttpClient, val endpoint: String) {
     var isDebugMode: Boolean = false
 
     init {
-        if (TextUtils.isEmpty(endpoint)) {
+        if (endpoint.isEmpty()) {
             throw IllegalArgumentException("endpoint is empty")
         }
     }
