@@ -23,6 +23,10 @@ android {
     lintOptions{
         disable 'InvalidPackage'
     }
+    buildFeatures {
+        buildConfig = false
+        dataBinding = false
+    }
 }
 
 dependencies {
